@@ -1,6 +1,6 @@
 import {getRandomIntegerNumber, getRandomArrayItem} from "../utils.js";
 
-const nameFilms = [
+const namesFilms = [
   `The Dance of Life`,
   `The Man with the Golden Arm`,
   `Santa Claus Conquers the Martians`,
@@ -10,7 +10,7 @@ const nameFilms = [
   `Made For Each Other`,
 ];
 
-const posterFilms = [
+const postersFilms = [
   `./images/posters/made-for-each-other.png`,
   `./images/posters/popeye-meets-sinbad.png`,
   `./images/posters/sagebrush-trail.jpg`,
@@ -20,7 +20,7 @@ const posterFilms = [
   `./images/posters/the-man-with-the-golden-arm.jpg`,
 ];
 
-const descriptionFilms = [
+const descriptionsFilms = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. In rutrum ac purus sit amet tempus tortor ac porta.`,
@@ -28,7 +28,7 @@ const descriptionFilms = [
   `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. In rutrum ac purus sit amet tempus tortor ac porta. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. In rutrum ac purus sit amet tempus tortor ac porta.`,
 ];
 
-const ratingFilms = [
+const ratingsFilms = [
   `8.3`,
   `9.0`,
   `2.3`,
@@ -38,7 +38,7 @@ const ratingFilms = [
   `7.3`,
 ];
 
-const yearFilms = [
+const yearsFilms = [
   `1955`,
   `1964`,
   `1929`,
@@ -47,7 +47,7 @@ const yearFilms = [
   `1980`,
 ];
 
-const durationFilms = [
+const durationsFilms = [
   `1h 36m`,
   `1h 55m`,
   `1h 59m`,
@@ -56,7 +56,7 @@ const durationFilms = [
   `1h 50m`,
 ];
 
-const genreFilms = [
+const genresFilms = [
   `Drama`,
   `Comedy`,
   `Fantasy`,
@@ -68,13 +68,13 @@ const genreFilms = [
 
 const generateFilm = () => {
   return {
-  	name: getRandomArrayItem(nameFilms),
-    rating: getRandomArrayItem(ratingFilms),
-    year: getRandomArrayItem(yearFilms),
-    duration: getRandomArrayItem(durationFilms),
-    genre: getRandomArrayItem(genreFilms),
-    poster: getRandomArrayItem(posterFilms),
-    description: getRandomArrayItem(descriptionFilms),
+  	name: getRandomArrayItem(namesFilms),
+    rating: getRandomArrayItem(ratingsFilms),
+    year: getRandomArrayItem(yearsFilms),
+    duration: getRandomArrayItem(durationsFilms),
+    genre: getRandomArrayItem(genresFilms),
+    poster: getRandomArrayItem(postersFilms),
+    description: getRandomArrayItem(descriptionsFilms),
     commentCount: getRandomIntegerNumber(0, 5),
     isActiveWatchlist: Math.random() > 0.5,
     isActiveWatched: Math.random() > 0.5,

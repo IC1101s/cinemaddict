@@ -1,4 +1,6 @@
-export const createPopupTemplate = (card) => {
+import {createElement} from "../utils.js";
+
+const createPopupTemplate = (popup) => {
 	const {
 		poster, 
 		name, 
@@ -15,7 +17,7 @@ export const createPopupTemplate = (card) => {
 		isActiveWatchlist,
 		isActiveWatched,
 		isActiveFavorite
-	} = card;
+	} = popup;
 
 	const isSeveral = genre.split(' ').length > 1;
 	const watchlistInput = isActiveWatchlist ? `checked` : ``;
@@ -101,3 +103,26 @@ export const createPopupTemplate = (card) => {
 	  </form>
 	</section>`;
 };
+
+export default class Popup {
+  constructor(popup) {
+    this._popup = popup;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._popup);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

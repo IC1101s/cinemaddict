@@ -1,4 +1,6 @@
-export const createFilmMostCommentedTemplate = (filmMostCommented) => {
+import {createElement} from "../utils.js";
+
+const createFilmMostCommentedTemplate = (films) => {
   const {
     name, 
     rating, 
@@ -11,7 +13,7 @@ export const createFilmMostCommentedTemplate = (filmMostCommented) => {
     isActiveWatchlist, 
     isActiveWatched, 
     isActiveFavorite
-  } = filmMostCommented;
+  } = films;
 
   const isBriefly = description.length <= 140;
   const watchlistButton = isActiveWatchlist ? `film-card__controls-item--active` : ``;
@@ -38,3 +40,26 @@ export const createFilmMostCommentedTemplate = (filmMostCommented) => {
     </form>
   </article>`;
 };
+
+export default class FilmMostCommented {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmMostCommentedTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

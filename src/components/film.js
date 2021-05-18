@@ -1,4 +1,6 @@
-export const createFilmTemplate = (film) => {
+import {createElement} from "../utils.js";
+
+const createFilmTemplate = (films) => {
   const {
     name, 
     rating, 
@@ -11,7 +13,7 @@ export const createFilmTemplate = (film) => {
     isActiveWatchlist, 
     isActiveWatched, 
     isActiveFavorite
-  } = film;
+  } = films;
 
   const isBriefly = description.length <= 140;
   const watchlistButton = isActiveWatchlist ? `film-card__controls-item--active` : ``;
@@ -38,3 +40,26 @@ export const createFilmTemplate = (film) => {
     </form>
   </article>`;
 };
+
+export default class Film {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

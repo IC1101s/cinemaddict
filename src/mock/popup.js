@@ -1,7 +1,7 @@
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayLength} from "../utils.js";
 import {generateFilm} from "../mock/film.js"
 
-const genreFilms = [
+const genresFilms = [
   `Drama`,
   `Comedy`,
   `Fantasy`,
@@ -11,7 +11,7 @@ const genreFilms = [
   `Film-Noir`,
 ];
 
-const directorFilms = [
+const directorsFilms = [
   `Anne Wigton`,
   `Heinz Herald`,
   `Richard Weil`,
@@ -34,7 +34,7 @@ const actorsFilms = [
   `Anthony Mann`,
 ];
 
-const dateFilms = [
+const datesFilms = [
   `30 March 1945`,
   `14 May 1986`,
   `21 June 1949`,
@@ -51,7 +51,7 @@ const countrysFilms = [
   `Canada`,
 ];
 
-const ageFilms = [
+const agesFilms = [
   `0`,
   `6`,
   `12`,
@@ -59,7 +59,7 @@ const ageFilms = [
   `18`,
 ];
 
-const generateСardFilm = () => {
+const generatePopupFilm = () => {
   const generateCopy = Object.assign({}, generateFilm());
   const {
     name, 
@@ -83,14 +83,14 @@ const generateСardFilm = () => {
     isActiveWatchlist,
     isActiveWatched,
     isActiveFavorite,
-    director: getRandomArrayItem(directorFilms),
+    director: getRandomArrayItem(directorsFilms),
     writers: getRandomArrayLength(writersFilms).join(`, `),
     actors: getRandomArrayLength(actorsFilms).join(`, `),
-    date: getRandomArrayItem(dateFilms),
+    date: getRandomArrayItem(datesFilms),
     country: getRandomArrayItem(countrysFilms),
-    genre: getRandomArrayLength(genreFilms).join(` `),
-    age: getRandomArrayItem(ageFilms),
+    genre: getRandomArrayLength(genresFilms).join(` `),
+    age: getRandomArrayItem(agesFilms),
   };
 };
  
-export {generateСardFilm};
+export {generatePopupFilm};

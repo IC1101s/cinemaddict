@@ -1,9 +1,9 @@
-import {getRandomIntegerNumber} from "../utils.js";
+import {createElement, getRandomIntegerNumber} from "../utils.js";
 
-const createCommentMarkup = (comments) => {
-	return comments.map((it) => { 
-	 	return (
-		 	`<li class="film-details__comment">
+const createCommentMarkup = (comment) => {
+  return comment.map((it) => { 
+    return (
+      `<li class="film-details__comment">
 				<span class="film-details__comment-emoji">
 				  <img src="${it.emojiImage}" width="55" height="55" alt="emoji-${it.name}">
 				</span>
@@ -16,34 +16,34 @@ const createCommentMarkup = (comments) => {
 				  </p>
 				</div>
 			</li>`
-		);
-	})
+    );
+  })
 	.join(`\n`);
 };
 
-const createInputMarkup = (emogis) => {
-	return emogis.map((it, index) => { 
-	 	return (
-		 	`<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${it.name[index]}" value="${it.name[index]}">
+const createEmogiInputMarkup = (emogi) => {
+  return emogi.map((it, index) => { 
+    return (
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${it.name[index]}" value="${it.name[index]}">
 			 <label class="film-details__emoji-label" for="emoji-${it.name[index]}">
 			   <img src="${it.emojiImage[index]}" width="30" height="30" alt="emoji">
 			 </label>`
-		);
-	})
+    );
+  })
 	.join(`\n`);
 };
 
-export const createCommentsTemplate = (comment, emogi) => {
-	const createComment = createCommentMarkup(comment);
-	const createInput = createInputMarkup(emogi);
-	const commentCount = getRandomIntegerNumber(0, 5);
+const createCommentsTemplate = (comments, emogis) => {
+  const createComments = createCommentMarkup(comments);
+  const createEmogisInputs = createEmogiInputMarkup(emogis);
+  const commentCount = getRandomIntegerNumber(0, 5);
 
- 	return `<div class="form-details__bottom-container">
+  return `<div class="form-details__bottom-container">
 	  <section class="film-details__comments-wrap">
 	    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentCount}</span></h3>
 
 	    <ul class="film-details__comments-list">
-	    	${createComment}
+	    	${createComments}
 	    </ul>
 
 	    <div class="film-details__new-comment">
@@ -54,9 +54,33 @@ export const createCommentsTemplate = (comment, emogi) => {
 	      </label>
 
 	      <div class="film-details__emoji-list">
-	        ${createInput}
+	        ${createEmogisInputs}
 	      </div>
 	    </div>
 	  </section>
-	</div>`
+  </div>`
 };
+
+export default class Comments {
+  constructor(comments, emogis) {
+    this._comments = comments;
+    this._emogis = emogis;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCommentsTemplate(this._comments, this._emogis);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

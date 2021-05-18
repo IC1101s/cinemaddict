@@ -332,6 +332,7 @@ button {
 }
 
 .film-card__title {
+  cursor: pointer;
   margin-right: 0.5em;
 }
 
@@ -353,6 +354,7 @@ button {
 }
 
 .film-card__poster {
+  cursor: pointer;
   border: dotted 1px rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   bottom: calc(100% - 340px - 50px);
