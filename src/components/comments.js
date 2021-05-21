@@ -1,4 +1,5 @@
-import {createElement, getRandomIntegerNumber} from "../utils.js";
+import {getRandomIntegerNumber} from "../utils/common.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createCommentMarkup = (comment) => {
   return comment.map((it) => { 
@@ -61,26 +62,15 @@ const createCommentsTemplate = (comments, emogis) => {
   </div>`
 };
 
-export default class Comments {
+export default class Comments extends AbstractComponent {
   constructor(comments, emogis) {
+  	super();
+
     this._comments = comments;
     this._emogis = emogis;
-    this._element = null;
   }
 
   getTemplate() {
     return createCommentsTemplate(this._comments, this._emogis);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

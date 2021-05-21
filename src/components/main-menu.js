@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createMainMenuMarkup = (name, count) => {
 	return `<a href="#${name}" class="main-navigation__item">${name} 
@@ -20,25 +20,14 @@ const createMainMenuTemplate = (menu) => {
   </nav>`;
 };
 
-export default class MainMenu {
+export default class MainMenu extends AbstractComponent {
 	constructor(menu) {
+		super();
+		
 		this._menu = menu;
-		this._element = null;
 	}
 
 	getTemplate() {
 		return createMainMenuTemplate(this._menu);
 	}
-
-	getElement() {
-		if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-	}
-
-	removeElement() {
-    this._element = null;
-  }
 }

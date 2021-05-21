@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayLength} from "../utils.js";
+import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayLength} from "../utils/common.js";
 import {generateFilm} from "../mock/film.js"
 
 const genresFilms = [

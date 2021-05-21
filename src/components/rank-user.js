@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createRankUserTemplate = (rank) => {
 	return `<section class="header__profile profile">
@@ -7,25 +7,14 @@ const createRankUserTemplate = (rank) => {
 	</section>`;
 };
 
-export default class RankUser {
+export default class RankUser extends AbstractComponent {
 	constructor(rank) {
+		super();
+
 		this._rank = rank;
-		this._element = null;
 	}
 
 	getTemplate() {
 		return createRankUserTemplate(this._rank);
 	}
-
-	getElement() {
-		if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-	}
-
-	removeElement() {
-    this._element = null;
-  }
 }

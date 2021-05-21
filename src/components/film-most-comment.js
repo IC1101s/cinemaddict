@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createFilmMostCommentedTemplate = (films) => {
   const {
@@ -41,25 +41,27 @@ const createFilmMostCommentedTemplate = (films) => {
   </article>`;
 };
 
-export default class FilmMostCommented {
+export default class FilmMostCommented extends AbstractComponent {
   constructor(films) {
+    super();
+
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmMostCommentedTemplate(this._films);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  setPopupClickHandler(handler) {
+    const areasClicks = [
+      `film-card__poster`, 
+      `film-card__title`, 
+      `film-card__comments`
+    ];
 
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    areasClicks.forEach((areaClick) => {
+      this.getElement().querySelector(`.${areaClick}`)
+       .addEventListener(`click`, handler);
+    });
   }
 }

@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber} from "../utils.js";
+import {getRandomIntegerNumber} from "../utils/common.js";
 import {USER_RANK} from "../const.js";
 
 const generateRank = () => {

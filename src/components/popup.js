@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract-component.js";
 
 const createPopupTemplate = (popup) => {
 	const {
@@ -104,25 +104,19 @@ const createPopupTemplate = (popup) => {
 	</section>`;
 };
 
-export default class Popup {
+export default class Popup extends AbstractComponent {
   constructor(popup) {
+  	super();
+
     this._popup = popup;
-    this._element = null;
   }
 
   getTemplate() {
     return createPopupTemplate(this._popup);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setPopupCloseClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`)
+     .addEventListener(`click`, handler);
   }
 }
