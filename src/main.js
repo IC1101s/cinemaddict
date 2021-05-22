@@ -1,6 +1,5 @@
 import RankUserComponent from "./components/rank-user.js";
 import MainMenuComponent from "./components/main-menu.js";
-import SortComponent from "./components/sort.js";
 import FilmsComponent from "./components/films.js";
 import FilmStatisticsComponent from "./components/film-statistics.js";
 import PageController from "./controllers/page.js";
@@ -28,12 +27,10 @@ const statisticsValue = 130291;
 
 render(headerElement, new RankUserComponent(ranks), RenderPosition.BEFOREEND);
 render(mainElement, new MainMenuComponent(menu), RenderPosition.BEFOREEND);
-render(mainElement, new SortComponent(), RenderPosition.BEFOREEND);
 
 const filmsComponent = new FilmsComponent();
 const pageController = new PageController(filmsComponent);
 
-render(mainElement, filmsComponent, RenderPosition.BEFOREEND);
 pageController.render(films, filmsTop, filmsMostCommented);
 
 render(footerStatisticsElement, new FilmStatisticsComponent(statisticsValue), RenderPosition.BEFOREEND);
