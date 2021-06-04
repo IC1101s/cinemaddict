@@ -7,11 +7,13 @@ export const SortType = {
 };
 
 const createSortTemplate = () => {
-	return `<ul class="sort">
-	  <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
-	  <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">Sort by date</a></li>
-	  <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">Sort by rating</a></li>
-	</ul>`;
+	return (
+    `<ul class="sort">
+  	  <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
+  	  <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">Sort by date</a></li>
+  	  <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">Sort by rating</a></li>
+  	</ul>`
+  );
 };
 
 export default class Sort extends AbstractComponent {
@@ -46,6 +48,17 @@ export default class Sort extends AbstractComponent {
       this._currenSortType = sortType;
 
       handler(this._currenSortType);
+
+      this._changeSortButtonActive(evt.target);
     });
+  }
+
+  _changeSortButtonActive(target) {
+    const buttons = document.querySelectorAll(`.sort__button`);
+    buttons.forEach((button) => {
+      button.classList.remove(`sort__button--active`);
+    });
+
+    target.classList.add(`sort__button--active`);
   }
 }

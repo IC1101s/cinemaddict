@@ -4,13 +4,15 @@ export const getRandomIntegerNumber = (min, max) => {
 
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length - 1);
-
+  
   return array[randomIndex];
 };
 
 export const getRandomArrayLength = (array) => {
-  const randomIndex = Math.ceil(Math.random() * array.length);
-  array.length = randomIndex;
+  return array.slice(0, getRandomIntegerNumber(2, array.length));
+}; 
 
-  return array;
-};
+export const getRandomArrayLength_2 = (array) => {
+  return array.slice(0, getRandomIntegerNumber(1, array.length));
+}; 
+

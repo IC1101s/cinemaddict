@@ -1,15 +1,17 @@
 import AbstractComponent from "./abstract-component.js";
 
 const createFilmStatisticsTemplate = (value) => {
-	let test = value;
+	let str = value;
 
 	if (typeof value !== 'string') {
-		test = String(value);
+		str = String(value);
 	}
 
-  return `<section class="footer__statistics">
-      <p>${test} movies inside</p>
-  </section>`;
+  return (
+    `<section class="footer__statistics">
+        <p>${str} movies inside</p>
+    </section>`
+  );
 };
 
 export default class FilmStatistics extends AbstractComponent {
