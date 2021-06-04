@@ -10,6 +10,9 @@ import {generateFilmsMostCommented} from "./mock/film-most-comment.js";
 import {generateMainMenu} from "./mock/main-menu.js"; 
 import {render, RenderPosition} from "./utils/render.js";
 
+// import moment from "moment"; 
+// console.log(moment().format(`YYYY/MM/DD HH:mm`)); moment РЕАЛИЗОВАТЬ ПОЗЖЕ!!!
+
 const FILM_COUNT = 18;
 const COMMENT_COUNT_MAX = 4;
 // const FILM_TOP_COUNT = 2;
@@ -37,3 +40,5 @@ pageController.render(films, comments, emojis); //, filmsTop, filmsMostCommented
 
 const statisticsValue = `130 291`;
 render(footerStatisticsElement, new FilmStatisticsComponent(statisticsValue), RenderPosition.BEFOREEND);
+
+
