@@ -1,23 +1,35 @@
 import AbstractComponent from "./abstract-component.js";
 
-const createMainMenuMarkup = (name, count) => {
+const createMainMenuMarkup = (menu, isActive) => {
+	const {
+		name, 
+		count,
+		isAllMovies,
+	} = menu; 
+
+	let href = ``;
+	if (isAllMovies) {
+		href = name.slice(0, 3).toLowerCase();
+	} else {
+		href = name.toLowerCase();
+	}
+
 	return (
-		`<a href="#${name}" class="main-navigation__item">${name} 
-			<span class="main-navigation__item-count">
-			  ${count}
-			</span>
+		`<a href="#${href}" class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}">${name}
+			${!isAllMovies ? 
+				`<span class="main-navigation__item-count">${count}</span>` 
+			: ``}			
 		</a>`
 	);
 };
 
 const createMainMenuTemplate = (menu) => {
-	const createMainMenu = menu.map((it) => createMainMenuMarkup(it.name, it.count)).join(`\n`);
+	const createMainMenu = menu.map((it, i) => createMainMenuMarkup(it, i === 0)).join(`\n`);
 
 	return (
 		`<nav class="main-navigation">
 	    <div class="main-navigation__items">
-	      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-	    		${createMainMenu}
+	    	${createMainMenu}
 	    </div>
 	    <a href="#stats" class="main-navigation__additional">Stats</a>
 	  </nav>`

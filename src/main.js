@@ -5,8 +5,8 @@ import PageController from "./controllers/page.js";
 import FilmStatisticsComponent from "./components/film-statistics.js";
 import {generateFilms, generateComments, generateEmojis} from "./mock/film.js";
 import {generateRank} from "./mock/rank-user.js";
-import {generateFilmsTop} from "./mock/film-top.js";
-import {generateFilmsMostCommented} from "./mock/film-most-comment.js";
+// import {generateFilmsTop} from "./mock/film-top.js";
+// import {generateFilmsMostCommented} from "./mock/film-most-comment.js";
 import {generateMainMenu} from "./mock/main-menu.js"; 
 import {render, RenderPosition} from "./utils/render.js";
 

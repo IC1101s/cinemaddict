@@ -47,8 +47,11 @@ const getSortedFilms = (films, sortType, from, to) => {
 export default class PageController {
 	constructor(container) {
 		this._container = container;
-		
+
 		this._films = [];
+		this._comments = [];
+		this._emojis = {};
+
 		this._showedMovieControllers = [];
 		this._showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
 
@@ -97,7 +100,7 @@ export default class PageController {
 	 		this._comments, 
 	 		this._emojis, 
 	 		this._onDataChange, 
-	 		this._onViewChange
+	 		this._onViewChange,
 	 	);
 
 	 	this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
@@ -138,7 +141,7 @@ export default class PageController {
 		 		this._comments, 
 		 		this._emojis, 
 		 		this._onDataChange, 
-		 		this._onViewChange
+		 		this._onViewChange,
 			);
 
 			this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
@@ -149,7 +152,7 @@ export default class PageController {
 		});
 	}
 
-	_onDataChange(filmController, oldData, newData) {
+	_onDataChange(movieController, oldData, newData) {
     const index = this._films.findIndex((it) => it === oldData);
 
     if (index === -1) {
@@ -158,7 +161,8 @@ export default class PageController {
 
     this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
 
-    filmController.render(this._films[index], this._comments, this._emojis);
+    movieController.render(this._films[index], this._comments, this._emojis);
+    // this._showedMovieControllers[index].render(this._films[index], this._comments, this._emojis);
   }
 
   _onViewChange() {
@@ -166,6 +170,8 @@ export default class PageController {
   }
 
 	_onSortTypeChange(sortType) {
+		// ПРИ ОТКРЫТОМ ПОПАПЕ И ПРИ ПЕРЕКЛЮЧЕНИИ СОРТИРОВКИ НЕ СБРАСЫВАЕТСЯ ПОПАП (при новом открытии создается ещё один попап) - ИСПРАВИТЬ!
+
     this._showingFilmsCount = SHOWING_FILMS_COUNT_BY_BUTTON;
 
     const filmsListElement = this._filmsListComponent.getElement();
@@ -181,7 +187,7 @@ export default class PageController {
 	 		this._comments, 
 	 		this._emojis, 
 	 		this._onDataChange, 
-	 		this._onViewChange
+	 		this._onViewChange,
 		);
 
     this._showedMovieControllers = newFilms;

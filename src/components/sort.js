@@ -1,4 +1,5 @@
 import AbstractComponent from "./abstract-component.js";
+import MovieController from "../controllers/movie.js";
 
 export const SortType = {
   DATE: `date`,

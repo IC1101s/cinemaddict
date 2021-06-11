@@ -1,7 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
 
 const createEmojiTemplate = (emojis) => {
-	return `<img src="./images/emoji/${emojis.isName}.png" width="100%" height="100%" alt="emoji-${emojis.isName}">`;
+	return `<img src="./images/emoji/${emojis.isName}.png" width="55px" height="55px" alt="emoji-${emojis.isName}">`;
 };
 
 const createCommentMarkup = (comment) => {
@@ -26,8 +26,8 @@ const createCommentMarkup = (comment) => {
 };
 
 const createEmojiInputMarkup = (emojis) => {
-	const emojiNames = Object.keys(emojis.emoji);
-	const emojiImages = Object.values(emojis.emoji);
+	const emojiNames = Object.keys(emojis.emojiNameToImage);
+	const emojiImages = Object.values(emojis.emojiNameToImage);
 
   return emojiNames.map((name, index) => { 
     return (
@@ -154,7 +154,7 @@ const createPopupTemplate = (film, comments, emojis) => {
 		            <tr class="film-details__row">
 		              <td class="film-details__term">${isSeveral ? `Genres` : `Genre`}</td>
 		              <td class="film-details__cell">
-		                ${`<span class="film-details__genre">${genres}</span>`}
+		                <span class="film-details__genre">${genres}</span>
 		              </td>
 		            </tr>
 		          </table>

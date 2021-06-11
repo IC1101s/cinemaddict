@@ -1,5 +1,4 @@
 import AbstractComponent from "./abstract-component.js";
-import {getRandomIntegerNumber} from "../utils/common.js";
 
 const createFilmTemplate = (film) => {
   const {

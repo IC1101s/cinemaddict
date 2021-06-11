@@ -1,5 +1,5 @@
 const mainMenuNames = [
-	`Watchlist`, `History`, `Favorites`
+	`All movies`, `Watchlist`, `History`, `Favorites`
 ];
 
 const generateMainMenu = () => {
@@ -7,6 +7,7 @@ const generateMainMenu = () => {
 		return {
 			name: it,
 			count: Math.floor(Math.random() * 18),
+			isAllMovies: it === `All movies`,
 		};
 	});
 };

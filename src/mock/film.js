@@ -78,6 +78,7 @@ const writersFilms = [
   `Heinz Herald`,
   `Richard Weil`,
   `Anthony Mann`,
+  `Ilon Mask`,
 ];
 
 const actorsFilms = [
@@ -85,7 +86,7 @@ const actorsFilms = [
   `Mary Beth Hughes`,
   `Richard Weil`,
   `Dan Duryea`,
-  `Richard Weil`,
+  `Ilon Mask`,
   `Anthony Mann`,
 ];
 
@@ -135,7 +136,7 @@ const days = [
   `3 days ago`,
 ];
 
-const emoji = {
+const emojiNameToImage = {
   smile: `./images/emoji/smile.png`,
   sleeping: `./images/emoji/sleeping.png`,
   puke: `./images/emoji/puke.png`,
@@ -174,8 +175,8 @@ const generateFilms = (count) => {
 };
 
 const generateComment = () => {
-  const emojiImages = Object.values(emoji);
-  const names = Object.keys(emoji);
+  const emojiImages = Object.values(emojiNameToImage);
+  const names = Object.keys(emojiNameToImage);
 
   return {
     emojiImage: getRandomArrayItem(emojiImages),
@@ -194,7 +195,7 @@ const generateComments = (count) => {
 
 const generateEmojis = () => {
   return {
-    emoji,
+    emojiNameToImage,
     isName: false,
   };
 };
