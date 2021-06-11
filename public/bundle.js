@@ -899,8 +899,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const Mode = {
-  DETAILS_ON: `on`,
-  DETAILS_OFF: `off`,
+  DETAILS_OPEN: `open`,
+  DETAILS_CLOSE: `close`,
 };
 
 class MovieController {
@@ -909,7 +909,7 @@ class MovieController {
   	this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
-    this._mode = Mode.DETAILS_OFF;
+    this._mode = Mode.DETAILS_CLOSE;
  		this._filmComponent = null;
   	this._filmDetails = null;
 
@@ -917,9 +917,12 @@ class MovieController {
     this._addPopup = this._addPopup.bind(this);
     this._removePopup = this._removePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+
+    this._onViewChange();
   }
 
-  render(film, comments, emojis) { 
+  render(film, comments, emojis) {  
+
   	const oldFilmComponent = this._filmComponent;
     const oldFilmDetailsComponent = this._filmDetails;
 
@@ -930,7 +933,9 @@ class MovieController {
     // this._filmMostCommentedComponent = new FilmMostCommentedComponent(film);
     
 		this._filmComponent.setPopupClickHandler(() => {
-			this._addPopup();
+      if (this._mode !== Mode.DETAILS_OPEN) {
+        this._addPopup();
+      }
 		});
 
 		this._filmComponent.setWatchlistButtonClickHandler((evt) => {
@@ -959,7 +964,7 @@ class MovieController {
 		if (oldFilmComponent && oldFilmDetailsComponent) {
       (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_2__.replace)(this._filmComponent, oldFilmComponent);
       (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_2__.replace)(this._filmDetails, oldFilmDetailsComponent);
-    } else {
+    } else {    
     	(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_2__.render)(this._container, this._filmComponent, _utils_render_js__WEBPACK_IMPORTED_MODULE_2__.RenderPosition.BEFOREEND);
     }
   }
@@ -989,7 +994,7 @@ class MovieController {
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DETAILS_OFF) {
+    if (this._mode !== Mode.DETAILS_CLOSE) {
       this._removePopup();
     } 
   }
@@ -1000,14 +1005,14 @@ class MovieController {
     this._onViewChange();
     document.addEventListener(`keydown`, this._onEscKeyDown);
     footer.after(this._filmDetails.getElement()); 
-    this._mode = Mode.DETAILS_ON;
+    this._mode = Mode.DETAILS_OPEN;
 	}
 
   _removePopup() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._filmDetails.reset();
     this._filmDetails.getElement().remove(); 
-    this._mode = Mode.DETAILS_OFF;
+    this._mode = Mode.DETAILS_CLOSE;
   }
 
 	_onEscKeyDown(evt) {
@@ -1212,8 +1217,6 @@ class PageController {
   }
 
 	_onSortTypeChange(sortType) {
-		// ПРИ ОТКРЫТОМ ПОПАПЕ И ПРИ ПЕРЕКЛЮЧЕНИИ СОРТИРОВКИ НЕ СБРАСЫВАЕТСЯ ПОПАП (при новом открытии создается ещё один попап) - ИСПРАВИТЬ!
-
     this._showingFilmsCount = SHOWING_FILMS_COUNT_BY_BUTTON;
 
     const filmsListElement = this._filmsListComponent.getElement();

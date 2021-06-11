@@ -170,8 +170,6 @@ export default class PageController {
   }
 
 	_onSortTypeChange(sortType) {
-		// ПРИ ОТКРЫТОМ ПОПАПЕ И ПРИ ПЕРЕКЛЮЧЕНИИ СОРТИРОВКИ НЕ СБРАСЫВАЕТСЯ ПОПАП (при новом открытии создается ещё один попап) - ИСПРАВИТЬ!
-
     this._showingFilmsCount = SHOWING_FILMS_COUNT_BY_BUTTON;
 
     const filmsListElement = this._filmsListComponent.getElement();

@@ -5,8 +5,8 @@ import FilmDetails from "../components/film-details.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
 const Mode = {
-  DETAILS_ON: `on`,
-  DETAILS_OFF: `off`,
+  DETAILS_OPEN: `open`,
+  DETAILS_CLOSE: `close`,
 };
 
 export default class MovieController {
@@ -15,7 +15,7 @@ export default class MovieController {
   	this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
-    this._mode = Mode.DETAILS_OFF;
+    this._mode = Mode.DETAILS_CLOSE;
  		this._filmComponent = null;
   	this._filmDetails = null;
 
@@ -23,9 +23,12 @@ export default class MovieController {
     this._addPopup = this._addPopup.bind(this);
     this._removePopup = this._removePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+
+    this._onViewChange();
   }
 
-  render(film, comments, emojis) { 
+  render(film, comments, emojis) {  
+
   	const oldFilmComponent = this._filmComponent;
     const oldFilmDetailsComponent = this._filmDetails;
 
@@ -36,7 +39,9 @@ export default class MovieController {
     // this._filmMostCommentedComponent = new FilmMostCommentedComponent(film);
     
 		this._filmComponent.setPopupClickHandler(() => {
-			this._addPopup();
+      if (this._mode !== Mode.DETAILS_OPEN) {
+        this._addPopup();
+      }
 		});
 
 		this._filmComponent.setWatchlistButtonClickHandler((evt) => {
@@ -65,7 +70,7 @@ export default class MovieController {
 		if (oldFilmComponent && oldFilmDetailsComponent) {
       replace(this._filmComponent, oldFilmComponent);
       replace(this._filmDetails, oldFilmDetailsComponent);
-    } else {
+    } else {    
     	render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
     }
   }
@@ -95,7 +100,7 @@ export default class MovieController {
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DETAILS_OFF) {
+    if (this._mode !== Mode.DETAILS_CLOSE) {
       this._removePopup();
     } 
   }
@@ -106,14 +111,14 @@ export default class MovieController {
     this._onViewChange();
     document.addEventListener(`keydown`, this._onEscKeyDown);
     footer.after(this._filmDetails.getElement()); 
-    this._mode = Mode.DETAILS_ON;
+    this._mode = Mode.DETAILS_OPEN;
 	}
 
   _removePopup() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._filmDetails.reset();
     this._filmDetails.getElement().remove(); 
-    this._mode = Mode.DETAILS_OFF;
+    this._mode = Mode.DETAILS_CLOSE;
   }
 
 	_onEscKeyDown(evt) {
