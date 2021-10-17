@@ -1,13 +1,23 @@
 import FilmComponent from "../components/film.js";
-// import FilmTopRatedComponent from "../components/film-top.js";
-// import FilmMostCommentedComponent from "../components/film-most-comment.js";
 import FilmDetails from "../components/film-details.js";
+import {generateComments} from "../mock/comment.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
+
+const COMMENT_COUNT_MAX = 4;
 
 const Mode = {
   DETAILS_OPEN: `open`,
   DETAILS_CLOSE: `close`,
 };
+
+const emojiNameToImage = {
+  smile: `./images/emoji/smile.png`,
+  sleeping: `./images/emoji/sleeping.png`,
+  puke: `./images/emoji/puke.png`,
+  angry: `./images/emoji/angry.png`,
+};
+
+const footer = document.querySelector(`footer`);
 
 export default class MovieController {
   constructor(container, onDataChange, onViewChange) {
@@ -16,31 +26,28 @@ export default class MovieController {
     this._onViewChange = onViewChange;
 
     this._mode = Mode.DETAILS_CLOSE;
+
+    this._comments = generateComments(COMMENT_COUNT_MAX);
+    this._emojis = emojiNameToImage;
+
  		this._filmComponent = null;
   	this._filmDetails = null;
 
-    this._filmDetailsChange = this._filmDetailsChange.bind(this);
-    this._addPopup = this._addPopup.bind(this);
-    this._removePopup = this._removePopup.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
 
     this._onViewChange();
   }
 
-  render(film, comments, emojis) {  
-
+  render(film) {  
   	const oldFilmComponent = this._filmComponent;
     const oldFilmDetailsComponent = this._filmDetails;
 
     this._filmComponent = new FilmComponent(film);
-    this._filmDetails = new FilmDetails(film, comments, emojis);
-
-    // this._filmTopRatedComponent = new FilmTopRatedComponent(film);
-    // this._filmMostCommentedComponent = new FilmMostCommentedComponent(film);
+    this._filmDetails = new FilmDetails(film, this._comments, this._emojis);
     
 		this._filmComponent.setPopupClickHandler(() => {
       if (this._mode !== Mode.DETAILS_OPEN) {
-        this._addPopup();
+        this._activePopup();
       }
 		});
 
@@ -65,17 +72,6 @@ export default class MovieController {
       }));
     });
 
-    this._filmDetailsChange(film);
-	 
-		if (oldFilmComponent && oldFilmDetailsComponent) {
-      replace(this._filmComponent, oldFilmComponent);
-      replace(this._filmDetails, oldFilmDetailsComponent);
-    } else {    
-    	render(this._container, this._filmComponent, RenderPosition.BEFOREEND);
-    }
-  }
-
-  _filmDetailsChange(film) {
     this._filmDetails.setWatchlistButtonClickHandler(() => {
       this._onDataChange(this, film, Object.assign({}, film, {
         isActiveWatchlist: !film.isActiveWatchlist,
@@ -97,6 +93,13 @@ export default class MovieController {
     this._filmDetails.setPopupCloseClickHandler(() => {
       this._removePopup();
     });
+	 
+		if (oldFilmComponent && oldFilmDetailsComponent) {
+      replace(this._filmComponent, oldFilmComponent);
+      replace(this._filmDetails, oldFilmDetailsComponent);
+    } else {    
+    	render(this._container, this._filmComponent);
+    }
   }
 
   setDefaultView() {
@@ -105,19 +108,17 @@ export default class MovieController {
     } 
   }
 
-  _addPopup() {
-    const footer = document.querySelector(`.footer`);
-
+  _activePopup() {
     this._onViewChange();
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    footer.after(this._filmDetails.getElement()); 
+    render(footer, this._filmDetails, RenderPosition.AFTEREND);
     this._mode = Mode.DETAILS_OPEN;
 	}
 
   _removePopup() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._filmDetails.reset();
-    this._filmDetails.getElement().remove(); 
+    this._filmDetails.getElement().remove();
     this._mode = Mode.DETAILS_CLOSE;
   }
 

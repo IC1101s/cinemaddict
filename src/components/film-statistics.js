@@ -1,15 +1,9 @@
 import AbstractComponent from "./abstract-component.js";
 
 const createFilmStatisticsTemplate = (value) => {
-	let str = value;
-
-	if (typeof value !== 'string') {
-		str = String(value);
-	}
-
   return (
     `<section class="footer__statistics">
-        <p>${str} movies inside</p>
+        <p>${value} movies inside</p>
     </section>`
   );
 };

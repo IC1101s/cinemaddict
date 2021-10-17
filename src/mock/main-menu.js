@@ -7,7 +7,6 @@ const generateMainMenu = () => {
 		return {
 			name: it,
 			count: Math.floor(Math.random() * 18),
-			isAllMovies: it === `All movies`,
 		};
 	});
 };

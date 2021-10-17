@@ -9,9 +9,15 @@ export const getRandomArrayItem = (array) => {
 };
 
 export const getRandomArrayLength = (array) => {
-  return array.slice(0, getRandomIntegerNumber(2, array.length));
+  const maxRandomNumber = getRandomIntegerNumber(0, array.length - 2);
+  const minRandomNumber = getRandomIntegerNumber(0, maxRandomNumber - 1);
+
+  return array.slice(minRandomNumber, maxRandomNumber);
 }; 
 
-export const getRandomArrayLength_2 = (array) => {
-  return array.slice(getRandomIntegerNumber(0, array.length - 1));
+export const getRandomArrayLength2 = (array) => {
+  const maxRandomNumber = getRandomIntegerNumber(2, array.length);
+  const minRandomNumber = getRandomIntegerNumber(0, maxRandomNumber - 2);
+  
+  return array.slice(minRandomNumber, maxRandomNumber);
 }; 

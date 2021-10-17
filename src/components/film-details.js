@@ -1,11 +1,14 @@
 import AbstractSmartComponent from "./abstract-smart-component.js";
+import {formatDateFullDate, formatDuration, formatDateHumanReadable} from "../utils/date.js"; 
 
-const createEmojiTemplate = (emojis) => {
-	return `<img src="./images/emoji/${emojis.isName}.png" width="55px" height="55px" alt="emoji-${emojis.isName}">`;
+const createEmojiTemplate = (emoji) => {
+	return `<img src="./images/emoji/${emoji.value}.png" width="55" height="55" alt="emoji-${emoji.value}">`;
 };
 
-const createCommentMarkup = (comment) => {
-  return comment.map((it) => { 
+const createCommentMarkup = (comments) => {	
+  return comments.map((it) => { 
+  	const dateHumanReadable = formatDateHumanReadable(it.date);
+
     return (
       `<li class="film-details__comment">
 				<span class="film-details__comment-emoji">
@@ -15,7 +18,7 @@ const createCommentMarkup = (comment) => {
 				  <p class="film-details__comment-text">${it.text}</p>
 				  <p class="film-details__comment-info">
 				    <span class="film-details__comment-author">${it.author}</span>
-				    <span class="film-details__comment-day">${it.day}</span>
+				    <span class="film-details__comment-day">${dateHumanReadable}</span>
 				    <button class="film-details__comment-delete">Delete</button>
 				  </p>
 				</div>
@@ -25,40 +28,40 @@ const createCommentMarkup = (comment) => {
 	.join(`\n`);
 };
 
-const createEmojiInputMarkup = (emojis) => {
-	const emojiNames = Object.keys(emojis.emojiNameToImage);
-	const emojiImages = Object.values(emojis.emojiNameToImage);
+const createEmojisInputMarkup = (emoji) => {
+	const emojisNames = Object.keys(emoji.emojiNameToImage);
+	const emojisImages = Object.values(emoji.emojiNameToImage);
 
-  return emojiNames.map((name, index) => { 
+  return emojisNames.map((name, index) => { 
     return (
       `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${name}" value="${name}">
 			 <label class="film-details__emoji-label" for="emoji-${name}">
-			   <img src="${emojiImages[index]}" width="30" height="30" alt="emoji-${name}">
+			   <img src="${emojisImages[index]}" width="30" height="30" alt="emoji-${name}">
 			 </label>`
     );
   })
   .join(`\n`);
 };
 
-const createCommentsTemplate = (film, comments, emojis) => {
-	const countComment = film.countComment;
-	const commentLength = comments.slice(0, countComment);
+const createCommentsTemplate = (film, comments, emoji) => {
+	const commentsLength = film.countComments;
+	const countComments = comments.slice(0, commentsLength);
 
-  const createComments = createCommentMarkup(commentLength);
-  const createEmojisInputs = createEmojiInputMarkup(emojis);
-  const createEmoji = createEmojiTemplate(emojis);
+  const createComments = createCommentMarkup(countComments);
+  const createEmojisInputs = createEmojisInputMarkup(emoji);
+  const createEmoji = emoji.value ? createEmojiTemplate(emoji) : ``;
   
   return (
   	`<div class="form-details__bottom-container">
 		  <section class="film-details__comments-wrap">
-		    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${countComment}</span></h3>
+		    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsLength}</span></h3>
 
 		    <ul class="film-details__comments-list">
 		    	${createComments}
 		    </ul>
 
 		    <div class="film-details__new-comment">
-		      <div for="add-emoji" class="film-details__add-emoji-label">${emojis.isName ? createEmoji : ``}</div>
+		      <div for="add-emoji" class="film-details__add-emoji-label">${createEmoji}</div>
 
 		      <label class="film-details__comment-label">
 		        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -73,18 +76,17 @@ const createCommentsTemplate = (film, comments, emojis) => {
   );
 };
 
-const createPopupTemplate = (film, comments, emojis) => {
+const createPopupTemplate = (film, comments, emoji) => {
 	const {
 		name, 
-    rating, 
-    year, 
+    rating,  
     duration,  
     poster, 
     description, 
     director,
     writers,
     actors,
-    date,
+    dueDate,
     country,
     genres,
     age,
@@ -93,12 +95,16 @@ const createPopupTemplate = (film, comments, emojis) => {
     isActiveFavorite,
   } = film;
 
-	const isSeveral = genres.split(' ').length > 1;
+	const isSeveral = genres.split(` `).length > 1 ? `Genres` : `Genre`;
+
+	const date = formatDateFullDate(dueDate);
+  const runtime = formatDuration(duration);
+
 	const watchlistInput = isActiveWatchlist ? `checked` : ``;
   const watchedInput = isActiveWatched ? `checked` : ``;
   const favoriteInput = isActiveFavorite ? `checked` : ``;
 
-  const createComments = createCommentsTemplate(film, comments, emojis);
+  const createComments = createCommentsTemplate(film, comments, emoji);
 
   return (
     `<section class="film-details">
@@ -141,18 +147,18 @@ const createPopupTemplate = (film, comments, emojis) => {
 		            </tr>
 		            <tr class="film-details__row">
 		              <td class="film-details__term">Release Date</td>
-		              <td class="film-details__cell">${date} ${year}</td>
+		              <td class="film-details__cell">${date}</td>
 		            </tr>
 		            <tr class="film-details__row">
 		              <td class="film-details__term">Runtime</td>
-		              <td class="film-details__cell">${duration}</td>
+		              <td class="film-details__cell">${runtime}</td>
 		            </tr>
 		            <tr class="film-details__row">
 		              <td class="film-details__term">Country</td>
 		              <td class="film-details__cell">${country}</td>
 		            </tr>
 		            <tr class="film-details__row">
-		              <td class="film-details__term">${isSeveral ? `Genres` : `Genre`}</td>
+		              <td class="film-details__term">${isSeveral}</td>
 		              <td class="film-details__cell">
 		                <span class="film-details__genre">${genres}</span>
 		              </td>
@@ -188,7 +194,10 @@ export default class FilmDetails extends AbstractSmartComponent {
 
 		this._film = film;
     this._comments = comments;
-    this._emojis = emojis;
+    this._emoji = {
+	    emojiNameToImage: emojis,
+	    value: null,
+	  };
 
     this._closeHandler = null;
     this._watchlistHandler = null;
@@ -199,7 +208,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film, this._comments, this._emojis);
+    return createPopupTemplate(this._film, this._comments, this._emoji);
   }
 
   recoveryListeners() {
@@ -215,7 +224,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   reset() {
-    this._emojis.isName = false;
+    this._emoji.value = null;
 
     this.rerender();
   }
@@ -253,7 +262,7 @@ export default class FilmDetails extends AbstractSmartComponent {
 
 		element.querySelectorAll(`.film-details__emoji-item`).forEach((it) => {
       it.addEventListener(`click`, () => {
-        this._emojis.isName = it.value;
+        this._emoji.value = it.value;
 
         this.rerender();   
       });
