@@ -1,3 +1,4 @@
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MomentLocalesPlugin = require(`moment-locales-webpack-plugin`);
 const path = require('path');
 
@@ -16,6 +17,13 @@ module.exports = {
   plugins: [
     new MomentLocalesPlugin({
       localesToKeep: [`es-us`],
-    })
-  ]
+    }),
+    // new UglifyJsPlugin({
+    //   uglifyOptions: {
+    //     output: {
+    //       comments: false,
+    //     },
+    //   },
+    // })
+  ],
 };
