@@ -1,4 +1,5 @@
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayLength, getRandomArrayLength2} from "../utils/common.js";
+import {formatDateYear} from "../utils/date.js"; 
 
 const namesFilms = [
   `The Dance of Life`,
@@ -108,9 +109,11 @@ const agesFilms = [
 ];
 
 const generateFilm = () => {
+  const dueDate = getRandomArrayItem(datesFilms);
   const genre = genresFilms[getRandomIntegerNumber(0, genresFilms.length - 1)];
   const copyGenresFilms = genresFilms.slice();
   const deleteGenre = copyGenresFilms.splice(copyGenresFilms.indexOf(genre, 0), 1);
+  const genres = [genre].concat(getRandomArrayLength(copyGenresFilms)).join(` `);
 
   return {
     countComments: getRandomIntegerNumber(0, 4),
@@ -119,13 +122,14 @@ const generateFilm = () => {
     duration: getRandomArrayItem(durationsFilms),
     poster: getRandomArrayItem(postersFilms),
     description: getRandomArrayItem(descriptionsFilms),  
-    director: getRandomArrayItem(directorsFilms),
-    dueDate: getRandomArrayItem(datesFilms),
+    director: getRandomArrayItem(directorsFilms), 
     country: getRandomArrayItem(countrysFilms),
     age: getRandomArrayItem(agesFilms),
     writers: getRandomArrayLength2(writersFilms).join(`, `),
     actors: getRandomArrayLength2(actorsFilms).join(`, `), 
-    genres: [genre].concat(getRandomArrayLength(copyGenresFilms)).join(` `),
+    year: formatDateYear(dueDate),
+    dueDate, 
+    genres,
     genre,
     isActiveWatchlist: Math.random() > 0.5,
     isActiveWatched: Math.random() > 0.5,
