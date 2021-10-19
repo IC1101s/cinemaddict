@@ -95,7 +95,7 @@ const createPopupTemplate = (film, comments, emoji) => {
     isActiveFavorite,
   } = film;
 
-	const isSeveral = genres.split(` `).length > 1 ? `Genres` : `Genre`;
+	const resultFieldName = genres.split(` `).length > 1 ? `Genres` : `Genre`;
 
 	const date = formatDateFullDate(dueDate);
   const runtime = formatDuration(duration);
@@ -158,7 +158,7 @@ const createPopupTemplate = (film, comments, emoji) => {
 		              <td class="film-details__cell">${country}</td>
 		            </tr>
 		            <tr class="film-details__row">
-		              <td class="film-details__term">${isSeveral}</td>
+		              <td class="film-details__term">${resultFieldName}</td>
 		              <td class="film-details__cell">
 		                <span class="film-details__genre">${genres}</span>
 		              </td>

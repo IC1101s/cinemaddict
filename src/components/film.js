@@ -1,11 +1,11 @@
 import AbstractComponent from "./abstract-component.js";
-import {formatDateYear, formatDuration} from "../utils/date.js"; 
+import {formatDuration} from "../utils/date.js"; 
 
 const createFilmTemplate = (film) => {
   const {
     name, 
     rating, 
-    dueDate, 
+    year, 
     duration, 
     genre, 
     poster, 
@@ -18,7 +18,6 @@ const createFilmTemplate = (film) => {
 
   const isBriefly = description.length <= 140;
 
-  const date = formatDateYear(dueDate);
   const runtime = formatDuration(duration);
 
   const watchlistButton = isActiveWatchlist ? `film-card__controls-item--active` : ``;
@@ -30,7 +29,7 @@ const createFilmTemplate = (film) => {
       <h3 class="film-card__title">${name}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">${date}</span>
+        <span class="film-card__year">${year}</span>
         <span class="film-card__duration">${runtime}</span>
         <span class="film-card__genre">${genre}</span>
       </p>

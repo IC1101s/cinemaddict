@@ -4,7 +4,6 @@ import ShowMoreButtonComponent from "../components/show-more-button.js";
 import NoFilmsComponent from "../components/no-films.js";
 import {SortType} from "../components/sort.js";
 import {render, remove, RenderPosition} from "../utils/render.js";
-import {formatDateYear} from "../utils/date.js"; 
 
 const SHOWING_FILMS_COUNT_ON_START = 5;
 const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
@@ -21,11 +20,11 @@ const renderFilms = (filmsListContainer, films, onDataChange, onViewChange) => {
 
 const getSortedFilms = (films, sortType, from, to) => {
   let sortedFilms = [];
-  const showingFilms = films.slice();
+  let showingFilms = films.slice();
 
   switch (sortType) {	
     case SortType.DATE:
-      sortedFilms = showingFilms.sort((a, b) => b.dueDate - a.dueDate);
+      sortedFilms = showingFilms.sort((a, b) => b.year - a.year);
       break;
     case SortType.RATING:
       sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);
@@ -44,7 +43,6 @@ export default class PageController {
 		this._sortComponent = sortComponent;
 
 		this._films = [];
-		this._copyFilms = [];
 		this._showedMovieControllers = [];
 		this._showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
 		this._noFilmsComponent = new NoFilmsComponent();
@@ -85,11 +83,6 @@ export default class PageController {
 	 	this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
 	  this._renderShowMoreButton();
-
-	  this._copyFilms = this._films.slice();
-		for (let film of this._copyFilms) {
-	  	film.dueDate = formatDateYear(film.dueDate);
-	  }
 	}
 
 	_renderShowMoreButton() {
@@ -106,7 +99,7 @@ export default class PageController {
 			const prevFilmsCount = this._showingFilmsCount;
 		  this._showingFilmsCount += SHOWING_FILMS_COUNT_BY_BUTTON;
 
-		  const sortedFilms = getSortedFilms(this._copyFilms, this._sortComponent.getSortType(), prevFilmsCount, this._showingFilmsCount);
+		  const sortedFilms = getSortedFilms(this._films, this._sortComponent.getSortType(), prevFilmsCount, this._showingFilmsCount);
       const newFilms = renderFilms(
 			 	filmsListContainer, 
 			  sortedFilms, 
@@ -144,7 +137,7 @@ export default class PageController {
     const filmsListElement = this._filmsListComponent.getElement();
 		const filmsListContElement = filmsListElement.querySelector(`.films-list__container`);
 
-    const sortedFilms = getSortedFilms(this._copyFilms, sortType, 0, this._showingFilmsCount);
+    const sortedFilms = getSortedFilms(this._films, sortType, 0, this._showingFilmsCount);
 
     filmsListContElement.innerHTML = ``;
 
