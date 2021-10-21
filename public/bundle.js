@@ -6028,7 +6028,7 @@ const createPopupTemplate = (film, comments, emoji) => {
     isActiveFavorite,
   } = film;
 
-	const isSeveral = genres.split(` `).length > 1 ? `Genres` : `Genre`;
+	const resultFieldName = genres.split(` `).length > 1 ? `Genres` : `Genre`;
 
 	const date = (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDateFullDate)(dueDate);
   const runtime = (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDuration)(duration);
@@ -6091,7 +6091,7 @@ const createPopupTemplate = (film, comments, emoji) => {
 		              <td class="film-details__cell">${country}</td>
 		            </tr>
 		            <tr class="film-details__row">
-		              <td class="film-details__term">${isSeveral}</td>
+		              <td class="film-details__term">${resultFieldName}</td>
 		              <td class="film-details__cell">
 		                <span class="film-details__genre">${genres}</span>
 		              </td>
@@ -6263,7 +6263,7 @@ const createFilmTemplate = (film) => {
   const {
     name, 
     rating, 
-    dueDate, 
+    year, 
     duration, 
     genre, 
     poster, 
@@ -6276,7 +6276,6 @@ const createFilmTemplate = (film) => {
 
   const isBriefly = description.length <= 140;
 
-  const date = (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDateYear)(dueDate);
   const runtime = (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDuration)(duration);
 
   const watchlistButton = isActiveWatchlist ? `film-card__controls-item--active` : ``;
@@ -6288,7 +6287,7 @@ const createFilmTemplate = (film) => {
       <h3 class="film-card__title">${name}</h3>
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
-        <span class="film-card__year">${date}</span>
+        <span class="film-card__year">${year}</span>
         <span class="film-card__duration">${runtime}</span>
         <span class="film-card__genre">${genre}</span>
       </p>
@@ -6842,14 +6841,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_no_films_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/no-films.js */ "./src/components/no-films.js");
 /* harmony import */ var _components_sort_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/sort.js */ "./src/components/sort.js");
 /* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../utils/render.js */ "./src/utils/render.js");
-/* harmony import */ var _utils_date_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../utils/date.js */ "./src/utils/date.js");
 
 
 
 
 
 
- 
 
 const SHOWING_FILMS_COUNT_ON_START = 5;
 const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
@@ -6866,11 +6863,11 @@ const renderFilms = (filmsListContainer, films, onDataChange, onViewChange) => {
 
 const getSortedFilms = (films, sortType, from, to) => {
   let sortedFilms = [];
-  const showingFilms = films.slice();
+  let showingFilms = films.slice();
 
   switch (sortType) {	
     case _components_sort_js__WEBPACK_IMPORTED_MODULE_4__.SortType.DATE:
-      sortedFilms = showingFilms.sort((a, b) => b.dueDate - a.dueDate);
+      sortedFilms = showingFilms.sort((a, b) => b.year - a.year);
       break;
     case _components_sort_js__WEBPACK_IMPORTED_MODULE_4__.SortType.RATING:
       sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);
@@ -6889,7 +6886,6 @@ class PageController {
 		this._sortComponent = sortComponent;
 
 		this._films = [];
-		this._copyFilms = [];
 		this._showedMovieControllers = [];
 		this._showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
 		this._noFilmsComponent = new _components_no_films_js__WEBPACK_IMPORTED_MODULE_3__.default();
@@ -6930,11 +6926,6 @@ class PageController {
 	 	this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
 	  this._renderShowMoreButton();
-
-	  this._copyFilms = this._films.slice();
-		for (let film of this._copyFilms) {
-	  	film.dueDate = (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_6__.formatDateYear)(film.dueDate);
-	  }
 	}
 
 	_renderShowMoreButton() {
@@ -6951,7 +6942,7 @@ class PageController {
 			const prevFilmsCount = this._showingFilmsCount;
 		  this._showingFilmsCount += SHOWING_FILMS_COUNT_BY_BUTTON;
 
-		  const sortedFilms = getSortedFilms(this._copyFilms, this._sortComponent.getSortType(), prevFilmsCount, this._showingFilmsCount);
+		  const sortedFilms = getSortedFilms(this._films, this._sortComponent.getSortType(), prevFilmsCount, this._showingFilmsCount);
       const newFilms = renderFilms(
 			 	filmsListContainer, 
 			  sortedFilms, 
@@ -6989,7 +6980,7 @@ class PageController {
     const filmsListElement = this._filmsListComponent.getElement();
 		const filmsListContElement = filmsListElement.querySelector(`.films-list__container`);
 
-    const sortedFilms = getSortedFilms(this._copyFilms, sortType, 0, this._showingFilmsCount);
+    const sortedFilms = getSortedFilms(this._films, sortType, 0, this._showingFilmsCount);
 
     filmsListContElement.innerHTML = ``;
 
@@ -7093,7 +7084,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "generateFilms": () => (/* binding */ generateFilms)
 /* harmony export */ });
 /* harmony import */ var _utils_common_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/common.js */ "./src/utils/common.js");
+/* harmony import */ var _utils_date_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/date.js */ "./src/utils/date.js");
 
+ 
 
 const namesFilms = [
   `The Dance of Life`,
@@ -7203,9 +7196,11 @@ const agesFilms = [
 ];
 
 const generateFilm = () => {
+  const dueDate = (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(datesFilms);
   const genre = genresFilms[(0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomIntegerNumber)(0, genresFilms.length - 1)];
   const copyGenresFilms = genresFilms.slice();
   const deleteGenre = copyGenresFilms.splice(copyGenresFilms.indexOf(genre, 0), 1);
+  const genres = [genre].concat((0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayLength)(copyGenresFilms)).join(` `);
 
   return {
     countComments: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomIntegerNumber)(0, 4),
@@ -7214,13 +7209,14 @@ const generateFilm = () => {
     duration: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(durationsFilms),
     poster: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(postersFilms),
     description: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(descriptionsFilms),  
-    director: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(directorsFilms),
-    dueDate: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(datesFilms),
+    director: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(directorsFilms), 
     country: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(countrysFilms),
     age: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(agesFilms),
     writers: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayLength2)(writersFilms).join(`, `),
     actors: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayLength2)(actorsFilms).join(`, `), 
-    genres: [genre].concat((0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayLength)(copyGenresFilms)).join(` `),
+    year: (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDateYear)(dueDate),
+    dueDate, 
+    genres,
     genre,
     isActiveWatchlist: Math.random() > 0.5,
     isActiveWatched: Math.random() > 0.5,
