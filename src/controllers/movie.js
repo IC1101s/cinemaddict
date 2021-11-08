@@ -1,23 +1,16 @@
 import FilmComponent from "../components/film.js";
-import FilmDetails from "../components/film-details.js";
-import {generateComments} from "../mock/comment.js";
-import {render, replace, RenderPosition} from "../utils/render.js";
-
-const COMMENT_COUNT_MAX = 4;
+import FilmDetailsComponent from "../components/film-details.js";
+import FilmDetailsInfoComponent from "../components/film-details-info.js";
+import FilmDetailsCommentsComponent from "../components/film-details-comments.js";
+import {render, replace, remove, RenderPosition} from "../utils/render.js";
 
 const Mode = {
   DETAILS_OPEN: `open`,
   DETAILS_CLOSE: `close`,
 };
 
-const emojiNameToImage = {
-  smile: `./images/emoji/smile.png`,
-  sleeping: `./images/emoji/sleeping.png`,
-  puke: `./images/emoji/puke.png`,
-  angry: `./images/emoji/angry.png`,
-};
-
-const footer = document.querySelector(`footer`);
+const body = document.querySelector(`body`);
+const footer = body.querySelector(`footer`);
 
 export default class MovieController {
   constructor(container, onDataChange, onViewChange) {
@@ -27,9 +20,6 @@ export default class MovieController {
 
     this._mode = Mode.DETAILS_CLOSE;
 
-    this._comments = generateComments(COMMENT_COUNT_MAX);
-    this._emojis = emojiNameToImage;
-
  		this._filmComponent = null;
   	this._filmDetails = null;
 
@@ -38,13 +28,28 @@ export default class MovieController {
     this._onViewChange();
   }
 
-  render(film) {  
+  render(film, comments) {  
   	const oldFilmComponent = this._filmComponent;
     const oldFilmDetailsComponent = this._filmDetails;
+    const oldFilmDetailsCommentsComponent = this._filmDetailsComments;
 
     this._filmComponent = new FilmComponent(film);
-    this._filmDetails = new FilmDetails(film, this._comments, this._emojis);
+
+    this._filmDetails = new FilmDetailsComponent();
+    const filmDetailsContainer = this._filmDetails.getElement()
+     .querySelector(`.film-details__inner`);
+
+    this._filmDetailsInfo = new FilmDetailsInfoComponent(film);
     
+    if (oldFilmDetailsCommentsComponent) {
+      this._filmDetailsComments = oldFilmDetailsCommentsComponent;
+    } else {
+      this._filmDetailsComments = new FilmDetailsCommentsComponent(film, comments);
+    }
+    
+    render(filmDetailsContainer, this._filmDetailsInfo);
+    render(filmDetailsContainer, this._filmDetailsComments);
+
 		this._filmComponent.setPopupClickHandler(() => {
       if (this._mode !== Mode.DETAILS_OPEN) {
         this._activePopup();
@@ -72,31 +77,35 @@ export default class MovieController {
       }));
     });
 
-    this._filmDetails.setWatchlistButtonClickHandler(() => {
+    this._filmDetailsInfo.setWatchlistButtonClickHandler(() => {
       this._onDataChange(this, film, Object.assign({}, film, {
         isActiveWatchlist: !film.isActiveWatchlist,
       }));
     });
 
-    this._filmDetails.setWatchedButtonClickHandler(() => {
+    this._filmDetailsInfo.setWatchedButtonClickHandler(() => {
       this._onDataChange(this, film, Object.assign({}, film, {
         isActiveWatched: !film.isActiveWatched,
       }));
     });
 
-    this._filmDetails.setFavoritesButtonClickHandler(() => {  
+    this._filmDetailsInfo.setFavoritesButtonClickHandler(() => {  
       this._onDataChange(this, film, Object.assign({}, film, {
         isActiveFavorite: !film.isActiveFavorite,
       }));
     });
 
-    this._filmDetails.setPopupCloseClickHandler(() => {
+    this._filmDetailsInfo.setPopupCloseClickHandler(() => {
       this._removePopup();
     });
 	 
 		if (oldFilmComponent && oldFilmDetailsComponent) {
+      // const countPixels = oldFilmDetailsComponent.getElement().scrollTop;
+
       replace(this._filmComponent, oldFilmComponent);
       replace(this._filmDetails, oldFilmDetailsComponent);
+
+      // this._filmDetails.getElement().scrollTo(0, this._countPixels); 
     } else {    
     	render(this._container, this._filmComponent);
     }
@@ -108,17 +117,30 @@ export default class MovieController {
     } 
   }
 
+  destroy() {
+    remove(this._filmDetails);
+    remove(this._filmComponent);
+
+    body.classList.remove(`hide-overflow-y`);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
   _activePopup() {
     this._onViewChange();
+
+    render(footer, this._filmDetails, RenderPosition.AFTEREND); 
+
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    render(footer, this._filmDetails, RenderPosition.AFTEREND);
+    body.classList.add(`hide-overflow-y`);
     this._mode = Mode.DETAILS_OPEN;
 	}
 
   _removePopup() {
+    this._filmDetailsComments.reset();  
+    this._filmDetails.getElement().remove(); 
+
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._filmDetails.reset();
-    this._filmDetails.getElement().remove();
+    body.classList.remove(`hide-overflow-y`);
     this._mode = Mode.DETAILS_CLOSE;
   }
 

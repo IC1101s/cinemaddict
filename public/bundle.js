@@ -5918,34 +5918,34 @@ class AbstractSmartComponent extends _abstract_component_js__WEBPACK_IMPORTED_MO
 
 /***/ }),
 
-/***/ "./src/components/film-details.js":
-/*!****************************************!*\
-  !*** ./src/components/film-details.js ***!
-  \****************************************/
+/***/ "./src/components/film-details-comments.js":
+/*!*************************************************!*\
+  !*** ./src/components/film-details-comments.js ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ FilmDetails)
+/* harmony export */   "default": () => (/* binding */ FilmDetailsComments)
 /* harmony export */ });
 /* harmony import */ var _abstract_smart_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-smart-component.js */ "./src/components/abstract-smart-component.js");
 /* harmony import */ var _utils_date_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/date.js */ "./src/utils/date.js");
 
  
 
-const createEmojiTemplate = (emoji) => {
-	return `<img src="./images/emoji/${emoji.value}.png" width="55" height="55" alt="emoji-${emoji.value}">`;
+const createEmojiTemplate = (valueEmoji) => {
+	return `<img src="./images/emoji/${valueEmoji}.png" width="55" height="55" alt="emoji-${valueEmoji}">`;
 };
 
 const createCommentMarkup = (comments) => {	
   return comments.map((it) => { 
-  	const dateHumanReadable = (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDateHumanReadable)(it.date);
+		const dateHumanReadable = (0,_utils_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDateHumanReadable)(it.date);
 
     return (
       `<li class="film-details__comment">
 				<span class="film-details__comment-emoji">
-				  <img src="${it.emojiImage}" width="55" height="55" alt="emoji-${it.name}">
+				  <img src="${it.emojiImage}" width="55" height="55" alt="emoji-${it.emoji}">
 				</span>
 				<div>
 				  <p class="film-details__comment-text">${it.text}</p>
@@ -5961,28 +5961,25 @@ const createCommentMarkup = (comments) => {
 	.join(`\n`);
 };
 
-const createEmojisInputMarkup = (emoji) => {
-	const emojisNames = Object.keys(emoji.emojiNameToImage);
-	const emojisImages = Object.values(emoji.emojiNameToImage);
-
-  return emojisNames.map((name, index) => { 
+const createEmojisInputMarkup = (comments) => {
+  return comments.map((it, index) => { 	
     return (
-      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${name}" value="${name}">
-			 <label class="film-details__emoji-label" for="emoji-${name}">
-			   <img src="${emojisImages[index]}" width="30" height="30" alt="emoji-${name}">
+      `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${it.emojis[index]}" value="${it.emojis[index]}">
+			 <label class="film-details__emoji-label" for="emoji-${it.emojis[index]}">
+			   <img src="${it.emojiImages[index]}" width="30" height="30" alt="emoji-${it.emojis[index]}">
 			 </label>`
     );
   })
   .join(`\n`);
 };
 
-const createCommentsTemplate = (film, comments, emoji) => {
+const createCommentsTemplate = (film, comments, valueEmoji) => {
 	const commentsLength = film.countComments;
 	const countComments = comments.slice(0, commentsLength);
 
   const createComments = createCommentMarkup(countComments);
-  const createEmojisInputs = createEmojisInputMarkup(emoji);
-  const createEmoji = emoji.value ? createEmojiTemplate(emoji) : ``;
+  const createEmojisInputs = createEmojisInputMarkup(comments);
+  const createEmoji = valueEmoji ? createEmojiTemplate(valueEmoji) : ``;
   
   return (
   	`<div class="form-details__bottom-container">
@@ -6009,7 +6006,69 @@ const createCommentsTemplate = (film, comments, emoji) => {
   );
 };
 
-const createPopupTemplate = (film, comments, emoji) => {
+class FilmDetailsComments extends _abstract_smart_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
+  constructor(film, comments) {
+  	super();
+
+    this._film = film;
+    this._comments = comments;
+
+    this._valueEmoji = null;
+
+    this._subscribeOnEvents();
+  }
+
+  getTemplate() {
+    return createCommentsTemplate(this._film, this._comments, this._valueEmoji);
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+  }
+
+  reset() {
+    this._valueEmoji = null;
+
+    this.rerender();
+  }
+
+  _subscribeOnEvents() {
+  	const element = this.getElement();
+
+		element.querySelectorAll(`.film-details__emoji-item`).forEach((it) => {
+      it.addEventListener(`click`, () => {
+        this._valueEmoji = it.value;
+
+        this.rerender();  
+      });
+    });
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/components/film-details-info.js":
+/*!*********************************************!*\
+  !*** ./src/components/film-details-info.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ FilmDetailsInfo)
+/* harmony export */ });
+/* harmony import */ var _abstract_smart_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-smart-component.js */ "./src/components/abstract-smart-component.js");
+/* harmony import */ var _utils_date_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/date.js */ "./src/utils/date.js");
+
+ 
+
+const createPopupTemplate = (film) => {
 	const {
 		name, 
     rating,  
@@ -6037,111 +6096,97 @@ const createPopupTemplate = (film, comments, emoji) => {
   const watchedInput = isActiveWatched ? `checked` : ``;
   const favoriteInput = isActiveFavorite ? `checked` : ``;
 
-  const createComments = createCommentsTemplate(film, comments, emoji);
-
   return (
-    `<section class="film-details">
-		  <form class="film-details__inner" action="" method="get">
-		    <div class="form-details__top-container">
-		      <div class="film-details__close">
-		        <button class="film-details__close-btn" type="button">close</button>
-		      </div>
-		      <div class="film-details__info-wrap">
-		        <div class="film-details__poster">
-		          <img class="film-details__poster-img" src="${poster}" alt="${name}">
+    `<div class="form-details__top-container">
+      <div class="film-details__close">
+        <button class="film-details__close-btn" type="button">close</button>
+      </div>
+      <div class="film-details__info-wrap">
+        <div class="film-details__poster">
+          <img class="film-details__poster-img" src="${poster}" alt="${name}">
 
-		          <p class="film-details__age">${age}+</p>
-		        </div>
+          <p class="film-details__age">${age}+</p>
+        </div>
 
-		        <div class="film-details__info">
-		          <div class="film-details__info-head">
-		            <div class="film-details__title-wrap">
-		              <h3 class="film-details__title">${name}</h3>
-		              <p class="film-details__title-original">Original: ${name}</p>
-		            </div>
+        <div class="film-details__info">
+          <div class="film-details__info-head">
+            <div class="film-details__title-wrap">
+              <h3 class="film-details__title">${name}</h3>
+              <p class="film-details__title-original">Original: ${name}</p>
+            </div>
 
-		            <div class="film-details__rating">
-		              <p class="film-details__total-rating">${rating}</p>
-		            </div>
-		          </div>
+            <div class="film-details__rating">
+              <p class="film-details__total-rating">${rating}</p>
+            </div>
+          </div>
 
-		          <table class="film-details__table">
-		            <tr class="film-details__row">
-		              <td class="film-details__term">Director</td>
-		              <td class="film-details__cell">${director}</td>
-		            </tr>
-		            <tr class="film-details__row">
-		              <td class="film-details__term">Writers</td>
-		              <td class="film-details__cell">${writers}</td>
-		            </tr>
-		            <tr class="film-details__row">
-		              <td class="film-details__term">Actors</td>
-		              <td class="film-details__cell">${actors}</td>
-		            </tr>
-		            <tr class="film-details__row">
-		              <td class="film-details__term">Release Date</td>
-		              <td class="film-details__cell">${date}</td>
-		            </tr>
-		            <tr class="film-details__row">
-		              <td class="film-details__term">Runtime</td>
-		              <td class="film-details__cell">${runtime}</td>
-		            </tr>
-		            <tr class="film-details__row">
-		              <td class="film-details__term">Country</td>
-		              <td class="film-details__cell">${country}</td>
-		            </tr>
-		            <tr class="film-details__row">
-		              <td class="film-details__term">${resultFieldName}</td>
-		              <td class="film-details__cell">
-		                <span class="film-details__genre">${genres}</span>
-		              </td>
-		            </tr>
-		          </table>
+          <table class="film-details__table">
+            <tr class="film-details__row">
+              <td class="film-details__term">Director</td>
+              <td class="film-details__cell">${director}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Writers</td>
+              <td class="film-details__cell">${writers}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Actors</td>
+              <td class="film-details__cell">${actors}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Release Date</td>
+              <td class="film-details__cell">${date}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Runtime</td>
+              <td class="film-details__cell">${runtime}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">Country</td>
+              <td class="film-details__cell">${country}</td>
+            </tr>
+            <tr class="film-details__row">
+              <td class="film-details__term">${resultFieldName}</td>
+              <td class="film-details__cell">
+                <span class="film-details__genre">${genres}</span>
+              </td>
+            </tr>
+          </table>
 
-		          <p class="film-details__film-description">
-		            ${description}
-		          </p>
-		        </div>
-		      </div>
+          <p class="film-details__film-description">
+            ${description}
+          </p>
+        </div>
+      </div>
 
-		      <section class="film-details__controls">
-		        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistInput}>
-		        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+      <section class="film-details__controls">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistInput}>
+        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-		        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedInput}>
-		        <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedInput}>
+        <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-		        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteInput}>
-		        <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
-		      </section>
-		    </div>
-				  ${createComments}
-		  </form>
-		</section>`
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteInput}>
+        <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
+      </section>
+    </div>`
 	);
 };
 
-class FilmDetails extends _abstract_smart_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
-  constructor(film, comments, emojis) {
+class FilmDetailsInfo extends _abstract_smart_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
+  constructor(film) {
   	super();
 
 		this._film = film;
-    this._comments = comments;
-    this._emoji = {
-	    emojiNameToImage: emojis,
-	    value: null,
-	  };
 
     this._closeHandler = null;
     this._watchlistHandler = null;
     this._watchedHandler = null;
     this._favoritesHandler = null;
-
-    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film, this._comments, this._emoji);
+    return createPopupTemplate(this._film);
   }
 
   recoveryListeners() {
@@ -6149,17 +6194,6 @@ class FilmDetails extends _abstract_smart_component_js__WEBPACK_IMPORTED_MODULE_
     this.setWatchlistButtonClickHandler(this._watchlistHandler);
     this.setWatchedButtonClickHandler(this._watchedHandler);
     this.setFavoritesButtonClickHandler(this._favoritesHandler);
-    this._subscribeOnEvents();
-  }
-
-  rerender() {
-    super.rerender();
-  }
-
-  reset() {
-    this._emoji.value = null;
-
-    this.rerender();
   }
 
   setPopupCloseClickHandler(handler) {
@@ -6189,18 +6223,38 @@ class FilmDetails extends _abstract_smart_component_js__WEBPACK_IMPORTED_MODULE_
 
     this._favoritesHandler = handler;
   }
+}
 
-  _subscribeOnEvents() {
-  	const element = this.getElement();
 
-		element.querySelectorAll(`.film-details__emoji-item`).forEach((it) => {
-      it.addEventListener(`click`, () => {
-        this._emoji.value = it.value;
+/***/ }),
 
-        this.rerender();   
-      });
-    });
-  }
+/***/ "./src/components/film-details.js":
+/*!****************************************!*\
+  !*** ./src/components/film-details.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ FilmDetails)
+/* harmony export */ });
+/* harmony import */ var _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component.js */ "./src/components/abstract-component.js");
+
+
+const createFilmDetailsTemplate = () => {
+	return (
+		`<section class="film-details">
+		  <form class="film-details__inner" action="" method="get">
+		  </form>
+		</section>`
+	);
+};
+
+class FilmDetails extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
+  getTemplate() {
+		return createFilmDetailsTemplate();
+	}
 }
 
 
@@ -6409,64 +6463,89 @@ class Films extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default 
 
 /***/ }),
 
-/***/ "./src/components/main-menu.js":
-/*!*************************************!*\
-  !*** ./src/components/main-menu.js ***!
-  \*************************************/
+/***/ "./src/components/filter.js":
+/*!**********************************!*\
+  !*** ./src/components/filter.js ***!
+  \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ MainMenu)
+/* harmony export */   "default": () => (/* binding */ Filter)
 /* harmony export */ });
 /* harmony import */ var _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component.js */ "./src/components/abstract-component.js");
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
 
 
-const createMainMenuMarkup = (menu, isActive) => {
-	const {
-		name, 
-		count,
-	} = menu; 
 
-	let href = ``;
-	
-	if (isActive) {
-		href = name.slice(0, 3).toLowerCase();
-	} else {
-		href = name.toLowerCase();
-	}
+const FILTER_ID_PREFIX = `filter__`;
+
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
+
+const createMainMenuMarkup = (filters, index) => {
+	const {name, count, isActive} = filters;
+
+	const nameFilter = name[0].toUpperCase() + name.slice(1);
+	const nameFilterForAllMovies = `${nameFilter.slice(0, 3)} ${nameFilter.slice(3)}`;
 
 	return (
-		`<a href="#${href}" class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}">
-			${isActive ? `${name}` : `${name} <span class="main-navigation__item-count">${count}</span>`}  
+		`<a href="#${name}" class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}" id="filter__${name}">
+			${index === 0 ? `${nameFilterForAllMovies}` : `${nameFilter} <span class="main-navigation__item-count">${count}</span>`}  
 		</a>`
 	);
 };
 
-const createMainMenuTemplate = (menu) => {
-	const createMainMenu = menu.map((it, index) => createMainMenuMarkup(it, index === 0)).join(`\n`);
+const createMainMenuTemplate = (filters) => {
+	const createFilters = filters.map((it, index) => createMainMenuMarkup(it, index)).join(`\n`);
 
 	return (
 		`<nav class="main-navigation">
 	    <div class="main-navigation__items">
-	    	${createMainMenu}
+	    	${createFilters}
 	    </div>
 	    <a href="#stats" class="main-navigation__additional">Stats</a>
 	  </nav>`
 	);
 };
 
-class MainMenu extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
-	constructor(menu) {
+class Filter extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
+	constructor(filters, activeFilterType) {
 		super();
 		
-		this._menu = menu;
+		this._filters = filters; 
+
+		this._currentFilterType = activeFilterType;
 	}
 
 	getTemplate() {
-		return createMainMenuTemplate(this._menu);
+		return createMainMenuTemplate(this._filters);
 	}
+
+	setFilterChangeHandler(handler) {
+    const filterButtons = this.getElement().querySelectorAll(`.main-navigation__item`);
+
+    filterButtons.forEach(filterButton => filterButton.addEventListener(`click`, (evt) => {
+    	evt.preventDefault();
+
+      const filterName = getFilterNameById(filterButton.id);
+
+      if (this._currentFilterType === filterName) {
+        return;
+      }
+
+      this._currentFilterType = filterName;
+
+      handler(filterName);
+
+      filterButtons.forEach((filterButton) => {
+	      filterButton.classList.remove(`main-navigation__item--active`);
+	    });
+      filterButton.classList.add(`main-navigation__item--active`);
+    }));
+  }
 }
 
 
@@ -6609,7 +6688,7 @@ class Sort extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
 	constructor() {
     super();
 
-    this._currenSortType = SortType.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
   }
 
 	getTemplate() {
@@ -6617,7 +6696,12 @@ class Sort extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
 	}
 
 	getSortType() {
-    return this._currenSortType;
+    return this._currentSortType;
+  }
+
+  setDefaultType() {
+    this._changeSortButtonActive(document.querySelector(`.sort__button`));
+    this._currentSortType = SortType.DEFAULT;
   }
 
 	setSortTypeChangeHandler(handler) {
@@ -6630,13 +6714,13 @@ class Sort extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
 
       const sortType = evt.target.dataset.sortType;
 
-      if (this._currenSortType === sortType) {
+      if (this._currentSortType === sortType) {
         return;
       }
 
-      this._currenSortType = sortType;
+      this._currentSortType = sortType;
 
-      handler(this._currenSortType);
+      handler(this._currentSortType);
 
       this._changeSortButtonActive(evt.target);
     });
@@ -6664,11 +6748,88 @@ class Sort extends _abstract_component_js__WEBPACK_IMPORTED_MODULE_0__.default {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "USER_RANK": () => (/* binding */ USER_RANK)
+/* harmony export */   "USER_RANK": () => (/* binding */ USER_RANK),
+/* harmony export */   "FilterType": () => (/* binding */ FilterType)
 /* harmony export */ });
 const USER_RANK = [`Novice`, `Fan`, `Movie Buff`];
 
+const FilterType = {
+  ALL: `allmovies`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`,
+}
 
+
+/***/ }),
+
+/***/ "./src/controllers/filter.js":
+/*!***********************************!*\
+  !*** ./src/controllers/filter.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ FilterController)
+/* harmony export */ });
+/* harmony import */ var _components_filter_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/filter.js */ "./src/components/filter.js");
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+/* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/render.js */ "./src/utils/render.js");
+/* harmony import */ var _utils_filter_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/filter.js */ "./src/utils/filter.js");
+
+
+
+
+
+class FilterController {
+	constructor(container, filmsModel) {
+		this._container = container;
+    this._filmsModel = filmsModel; 
+
+		this._filterComponent = null;
+
+    this._activeFilterType = _const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.ALL;
+
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+
+    this._filmsModel.setDataChangeHandler(this._onDataChange);
+	}
+
+	render() {
+		const container = this._container;
+    const allFilms = this._filmsModel.getFilmsAll();
+    const filters = Object.values(_const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType).map((filterType) => {
+      return {
+        name: filterType,
+        count: (0,_utils_filter_js__WEBPACK_IMPORTED_MODULE_3__.getFilmsByFilter)(allFilms, filterType).length,
+        isActive: filterType === this._activeFilterType,
+      };
+    });
+
+    const oldComponent = this._filterComponent;
+
+    this._filterComponent = new _components_filter_js__WEBPACK_IMPORTED_MODULE_0__.default(filters, this._activeFilterType);
+    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+
+    if (oldComponent) {
+      (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_2__.replace)(this._filterComponent, oldComponent);
+    } else {
+      (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_2__.render)(container, this._filterComponent);
+    }
+	}
+
+	_onFilterChange(filterType) {
+		this._filmsModel.setFilter(filterType);
+    this._activeFilterType = filterType;
+  }
+
+  _onDataChange() {
+    this.render();
+  }
+}
 
 
 /***/ }),
@@ -6686,28 +6847,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _components_film_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/film.js */ "./src/components/film.js");
 /* harmony import */ var _components_film_details_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/film-details.js */ "./src/components/film-details.js");
-/* harmony import */ var _mock_comment_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mock/comment.js */ "./src/mock/comment.js");
-/* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/render.js */ "./src/utils/render.js");
+/* harmony import */ var _components_film_details_info_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/film-details-info.js */ "./src/components/film-details-info.js");
+/* harmony import */ var _components_film_details_comments_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/film-details-comments.js */ "./src/components/film-details-comments.js");
+/* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/render.js */ "./src/utils/render.js");
 
 
 
 
 
-const COMMENT_COUNT_MAX = 4;
 
 const Mode = {
   DETAILS_OPEN: `open`,
   DETAILS_CLOSE: `close`,
 };
 
-const emojiNameToImage = {
-  smile: `./images/emoji/smile.png`,
-  sleeping: `./images/emoji/sleeping.png`,
-  puke: `./images/emoji/puke.png`,
-  angry: `./images/emoji/angry.png`,
-};
-
-const footer = document.querySelector(`footer`);
+const body = document.querySelector(`body`);
+const footer = body.querySelector(`footer`);
 
 class MovieController {
   constructor(container, onDataChange, onViewChange) {
@@ -6717,9 +6872,6 @@ class MovieController {
 
     this._mode = Mode.DETAILS_CLOSE;
 
-    this._comments = (0,_mock_comment_js__WEBPACK_IMPORTED_MODULE_2__.generateComments)(COMMENT_COUNT_MAX);
-    this._emojis = emojiNameToImage;
-
  		this._filmComponent = null;
   	this._filmDetails = null;
 
@@ -6728,13 +6880,28 @@ class MovieController {
     this._onViewChange();
   }
 
-  render(film) {  
+  render(film, comments) {  
   	const oldFilmComponent = this._filmComponent;
     const oldFilmDetailsComponent = this._filmDetails;
+    const oldFilmDetailsCommentsComponent = this._filmDetailsComments;
 
     this._filmComponent = new _components_film_js__WEBPACK_IMPORTED_MODULE_0__.default(film);
-    this._filmDetails = new _components_film_details_js__WEBPACK_IMPORTED_MODULE_1__.default(film, this._comments, this._emojis);
+
+    this._filmDetails = new _components_film_details_js__WEBPACK_IMPORTED_MODULE_1__.default();
+    const filmDetailsContainer = this._filmDetails.getElement()
+     .querySelector(`.film-details__inner`);
+
+    this._filmDetailsInfo = new _components_film_details_info_js__WEBPACK_IMPORTED_MODULE_2__.default(film);
     
+    if (oldFilmDetailsCommentsComponent) {
+      this._filmDetailsComments = oldFilmDetailsCommentsComponent;
+    } else {
+      this._filmDetailsComments = new _components_film_details_comments_js__WEBPACK_IMPORTED_MODULE_3__.default(film, comments);
+    }
+    
+    (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.render)(filmDetailsContainer, this._filmDetailsInfo);
+    (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.render)(filmDetailsContainer, this._filmDetailsComments);
+
 		this._filmComponent.setPopupClickHandler(() => {
       if (this._mode !== Mode.DETAILS_OPEN) {
         this._activePopup();
@@ -6762,33 +6929,37 @@ class MovieController {
       }));
     });
 
-    this._filmDetails.setWatchlistButtonClickHandler(() => {
+    this._filmDetailsInfo.setWatchlistButtonClickHandler(() => {
       this._onDataChange(this, film, Object.assign({}, film, {
         isActiveWatchlist: !film.isActiveWatchlist,
       }));
     });
 
-    this._filmDetails.setWatchedButtonClickHandler(() => {
+    this._filmDetailsInfo.setWatchedButtonClickHandler(() => {
       this._onDataChange(this, film, Object.assign({}, film, {
         isActiveWatched: !film.isActiveWatched,
       }));
     });
 
-    this._filmDetails.setFavoritesButtonClickHandler(() => {  
+    this._filmDetailsInfo.setFavoritesButtonClickHandler(() => {  
       this._onDataChange(this, film, Object.assign({}, film, {
         isActiveFavorite: !film.isActiveFavorite,
       }));
     });
 
-    this._filmDetails.setPopupCloseClickHandler(() => {
+    this._filmDetailsInfo.setPopupCloseClickHandler(() => {
       this._removePopup();
     });
 	 
 		if (oldFilmComponent && oldFilmDetailsComponent) {
-      (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_3__.replace)(this._filmComponent, oldFilmComponent);
-      (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_3__.replace)(this._filmDetails, oldFilmDetailsComponent);
+      // const countPixels = oldFilmDetailsComponent.getElement().scrollTop;
+
+      (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.replace)(this._filmComponent, oldFilmComponent);
+      (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.replace)(this._filmDetails, oldFilmDetailsComponent);
+
+      // this._filmDetails.getElement().scrollTo(0, this._countPixels); 
     } else {    
-    	(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_3__.render)(this._container, this._filmComponent);
+    	(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.render)(this._container, this._filmComponent);
     }
   }
 
@@ -6798,17 +6969,30 @@ class MovieController {
     } 
   }
 
+  destroy() {
+    (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.remove)(this._filmDetails);
+    (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.remove)(this._filmComponent);
+
+    body.classList.remove(`hide-overflow-y`);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
   _activePopup() {
     this._onViewChange();
+
+    (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_4__.render)(footer, this._filmDetails, _utils_render_js__WEBPACK_IMPORTED_MODULE_4__.RenderPosition.AFTEREND); 
+
     document.addEventListener(`keydown`, this._onEscKeyDown);
-    (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_3__.render)(footer, this._filmDetails, _utils_render_js__WEBPACK_IMPORTED_MODULE_3__.RenderPosition.AFTEREND);
+    body.classList.add(`hide-overflow-y`);
     this._mode = Mode.DETAILS_OPEN;
 	}
 
   _removePopup() {
+    this._filmDetailsComments.reset();  
+    this._filmDetails.getElement().remove(); 
+
     document.removeEventListener(`keydown`, this._onEscKeyDown);
-    this._filmDetails.reset();
-    this._filmDetails.getElement().remove();
+    body.classList.remove(`hide-overflow-y`);
     this._mode = Mode.DETAILS_CLOSE;
   }
 
@@ -6851,11 +7035,11 @@ __webpack_require__.r(__webpack_exports__);
 const SHOWING_FILMS_COUNT_ON_START = 5;
 const SHOWING_FILMS_COUNT_BY_BUTTON = 5;
 
-const renderFilms = (filmsListContainer, films, onDataChange, onViewChange) => {
+const renderFilms = (filmsListContainer, films, comments, onDataChange, onViewChange) => {
 	return films.map((film) => {
 		const movieController = new _movie_js__WEBPACK_IMPORTED_MODULE_0__.default(filmsListContainer, onDataChange, onViewChange);
 	
-		movieController.render(film);
+		movieController.render(film, comments);
 
 		return movieController;
 	});
@@ -6881,11 +7065,12 @@ const getSortedFilms = (films, sortType, from, to) => {
 };
 
 class PageController {
-	constructor(container, sortComponent) {
+	constructor(container, filmsModel, commentsModel, sortComponent) {
 		this._container = container;
+		this._filmsModel = filmsModel;
+		this._commentsModel = commentsModel;
 		this._sortComponent = sortComponent;
 
-		this._films = [];
 		this._showedMovieControllers = [];
 		this._showingFilmsCount = SHOWING_FILMS_COUNT_ON_START;
 		this._noFilmsComponent = new _components_no_films_js__WEBPACK_IMPORTED_MODULE_3__.default();
@@ -6895,15 +7080,17 @@ class PageController {
 		this._onDataChange = this._onDataChange.bind(this);
 		this._onSortTypeChange = this._onSortTypeChange.bind(this);
 		this._onViewChange = this._onViewChange.bind(this);
+		this._onLoadShowMoreButtonClick = this._onLoadShowMoreButtonClick.bind(this);
+		this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._filmsModel.setFilterChangeHandler(this._onFilterChange);
 	}
 
-	render(films) {
-		this._films = films;
-
+	render() {
   	const container = this._container.getElement();
-		const isAllFilmsWatched = this._films.every((film) => film.isActiveWatched);
+  	const films = this._filmsModel.getFilms();
+		const isAllFilmsWatched = films.every((film) => film.isActiveWatched);
 
 	  if (isAllFilmsWatched) {
 	  	(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_5__.remove)(this._sortComponent);
@@ -6913,23 +7100,44 @@ class PageController {
 
 		(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_5__.render)(container, this._filmsListComponent);
 
+		this._renderFilms(films.slice(0, this._showingFilmsCount));
+		
+	  this._renderShowMoreButton();
+	}
+
+	_renderFilms(films) {
 		const filmsListContainer = this._filmsListComponent.getElement()
 		 .querySelector(`.films-list__container`);
 
-	 	const newFilms = renderFilms(
+		const newFilms = renderFilms(
 	 		filmsListContainer, 
-	 		this._films.slice(0, this._showingFilmsCount), 
+	 		films, 
+	 		this._commentsModel.getComments(),
 	 		this._onDataChange, 
 	 		this._onViewChange,
 	 	);
 
 	 	this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
 
-	  this._renderShowMoreButton();
+	 	this._showingFilmsCount = this._showedMovieControllers.length;
 	}
 
+	_removeFilms() {
+    this._showedMovieControllers.forEach((movieController) => movieController.destroy());
+    this._showedMovieControllers = [];
+  }
+
+  _updateFilms(count) {
+    this._removeFilms();
+    this._sortComponent.setDefaultType();
+    this._renderFilms(this._filmsModel.getFilms().slice(0, count));
+    this._renderShowMoreButton();
+  }
+
 	_renderShowMoreButton() {
-		if (this._showingFilmsCount >= this._films.length) {
+		(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_5__.remove)(this._showMoreButtonComponent);
+
+		if (this._showingFilmsCount >= this._filmsModel.getFilms().length) {
       return;
     }	
 
@@ -6938,36 +7146,29 @@ class PageController {
 
 		(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_5__.render)(filmsListElement, this._showMoreButtonComponent);
 
-		this._showMoreButtonComponent.setClickHandler(() => {
-			const prevFilmsCount = this._showingFilmsCount;
-		  this._showingFilmsCount += SHOWING_FILMS_COUNT_BY_BUTTON;
-
-		  const sortedFilms = getSortedFilms(this._films, this._sortComponent.getSortType(), prevFilmsCount, this._showingFilmsCount);
-      const newFilms = renderFilms(
-			 	filmsListContainer, 
-			  sortedFilms, 
-		 		this._onDataChange, 
-		 		this._onViewChange,
-			);
-
-			this._showedMovieControllers = this._showedMovieControllers.concat(newFilms);
-
-		  if (this._showingFilmsCount >= this._films.length) {
-		    (0,_utils_render_js__WEBPACK_IMPORTED_MODULE_5__.remove)(this._showMoreButtonComponent);
-		  }
-		});
+		this._showMoreButtonComponent.setClickHandler(this._onLoadShowMoreButtonClick);
 	}
 
-	_onDataChange(movieController, oldData, newData) {
-    const index = this._films.findIndex((it) => it === oldData); 
+	_onLoadShowMoreButtonClick() {
+		const prevFilmsCount = this._showingFilmsCount;
+		const films = this._filmsModel.getFilmsOld();
 
-    if (index === -1) {
-      return;
+	  this._showingFilmsCount += SHOWING_FILMS_COUNT_BY_BUTTON;
+
+	  const sortedFilms = getSortedFilms(films, this._sortComponent.getSortType(), prevFilmsCount, this._showingFilmsCount);
+	  this._renderFilms(sortedFilms);
+
+		if (this._showingFilmsCount >= films.length) {
+     	(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_5__.remove)(this._showMoreButtonComponent);
+    }	
+  }
+
+	_onDataChange(movieController, oldData, newData) { 
+		const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
+
+    if (isSuccess) {
+      movieController.render(newData, this._commentsModel.getComments());
     }
-																							
-    this._films = [].concat(this._films.slice(0, index), newData, this._films.slice(index + 1));
-
-    movieController.render(this._films[index]);
   }
 
   _onViewChange() {
@@ -6980,22 +7181,25 @@ class PageController {
     const filmsListElement = this._filmsListComponent.getElement();
 		const filmsListContElement = filmsListElement.querySelector(`.films-list__container`);
 
-    const sortedFilms = getSortedFilms(this._films, sortType, 0, this._showingFilmsCount);
+    const sortedFilms = getSortedFilms(this._filmsModel.getFilms(), sortType, 0, this._showingFilmsCount);
 
     filmsListContElement.innerHTML = ``;
 
     const newFilms = renderFilms(
 		 	filmsListContElement, 
-		  sortedFilms, 
+		  sortedFilms,
+		  this._commentsModel.getComments(),
 	 		this._onDataChange, 
 	 		this._onViewChange,
 		);	
 
     this._showedMovieControllers = newFilms;
 
-    if (!filmsListElement.contains(this._showMoreButtonComponent.getElement())) {	
-			this._renderShowMoreButton();
-    } 
+		this._renderShowMoreButton();
+  }
+
+  _onFilterChange() {
+    this._updateFilms(SHOWING_FILMS_COUNT_ON_START);
   }
 }
 
@@ -7041,23 +7245,30 @@ const date = [
   `2021-10-17T19:10:21.005Z`,
 ];
 
-const emojiNameToImage = {
-  smile: `./images/emoji/smile.png`,
-  sleeping: `./images/emoji/sleeping.png`,
-  puke: `./images/emoji/puke.png`,
-  angry: `./images/emoji/angry.png`,
-};
+const emojiImages = [
+  `./images/emoji/smile.png`,
+  `./images/emoji/sleeping.png`,
+  `./images/emoji/puke.png`,
+  `./images/emoji/angry.png`,
+];
+
+const emojis = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`,
+];
 
 const generateComment = () => {
-  const emojiImages = Object.values(emojiNameToImage);
-  const names = Object.keys(emojiNameToImage);
-
   return {
-    emojiImage: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(emojiImages),
-    name: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(names),
+    id: String(new Date() + Math.random()),
     text: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(texts),
     author: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(authors),
     date: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(date),
+    emoji: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(emojis),
+    emojiImage: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(emojiImages),
+    emojis,
+    emojiImages,
   };
 };
 
@@ -7203,6 +7414,7 @@ const generateFilm = () => {
   const genres = [genre].concat((0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayLength)(copyGenresFilms)).join(` `);
 
   return {
+    id: String(new Date() + Math.random()),
     countComments: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomIntegerNumber)(0, 4),
   	name: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(namesFilms),
     rating: (0,_utils_common_js__WEBPACK_IMPORTED_MODULE_0__.getRandomArrayItem)(ratingsFilms).toFixed(1),
@@ -7228,35 +7440,6 @@ const generateFilms = (count) => {
   return new Array(count)
     .fill(``)
     .map(generateFilm);
-};
-
-
-
-
-/***/ }),
-
-/***/ "./src/mock/main-menu.js":
-/*!*******************************!*\
-  !*** ./src/mock/main-menu.js ***!
-  \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "generateMainMenu": () => (/* binding */ generateMainMenu)
-/* harmony export */ });
-const mainMenuNames = [
-	`All movies`, `Watchlist`, `History`, `Favorites`
-];
-
-const generateMainMenu = () => {
-	return mainMenuNames.map((it) => {	
-		return {
-			name: it,
-			count: Math.floor(Math.random() * 18),
-		};
-	});
 };
 
 
@@ -7296,6 +7479,116 @@ const generateRank = () => {
 };
 
 
+
+
+/***/ }),
+
+/***/ "./src/models/comments.js":
+/*!********************************!*\
+  !*** ./src/models/comments.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Comments)
+/* harmony export */ });
+class Comments {
+	constructor() {
+		this._comments = [];
+	}
+
+	setComments(comments) {
+		this._comments = comments;
+	}
+
+  getComments() {
+    return this._comments;
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/models/movies.js":
+/*!******************************!*\
+  !*** ./src/models/movies.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Movies)
+/* harmony export */ });
+/* harmony import */ var _utils_filter_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/filter.js */ "./src/utils/filter.js");
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+
+
+
+class Movies {
+	constructor() {
+		this._films = [];
+
+		this._activeFilterType = _const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.ALL;
+
+		this._dataChangeHandlers = []; // this.render()
+		this._filterChangeHandlers = []; // _updateFilms()
+
+    this._filmsByFilter = null;
+	}
+
+	getFilms() {
+    this._filmsByFilter = (0,_utils_filter_js__WEBPACK_IMPORTED_MODULE_0__.getFilmsByFilter)(this._films, this._activeFilterType);
+
+    return (0,_utils_filter_js__WEBPACK_IMPORTED_MODULE_0__.getFilmsByFilter)(this._films, this._activeFilterType);
+  }
+
+  getFilmsOld() {
+    return this._filmsByFilter;
+  }
+
+  getFilmsAll() {
+    return this._films;
+  }
+
+	setFilms(films) {
+		this._films = films;
+		this._callHandlers(this._dataChangeHandlers);
+	}
+
+	setFilter(filterType) {
+    this._activeFilterType = filterType;
+    this._callHandlers(this._filterChangeHandlers);
+  }
+
+	updateFilm(id, film) {
+    const index = this._films.findIndex((it) => it.id === id); 
+
+    if (index === -1) {
+      return;
+    }
+
+    this._films = [].concat(this._films.slice(0, index), film, this._films.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers); 
+
+    return true;
+  }
+
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
+  }
+}
 
 
 /***/ }),
@@ -7375,6 +7668,52 @@ const formatDateHumanReadable = (date) => {
   return moment__WEBPACK_IMPORTED_MODULE_0___default()(date, `YYYY-MM-DDTHH:mm:ss.SSS-3`).fromNow();
 };
 
+
+/***/ }),
+
+/***/ "./src/utils/filter.js":
+/*!*****************************!*\
+  !*** ./src/utils/filter.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getWatchlistFilms": () => (/* binding */ getWatchlistFilms),
+/* harmony export */   "getHistoryFilms": () => (/* binding */ getHistoryFilms),
+/* harmony export */   "getFavoriteFilms": () => (/* binding */ getFavoriteFilms),
+/* harmony export */   "getFilmsByFilter": () => (/* binding */ getFilmsByFilter)
+/* harmony export */ });
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+
+
+const getWatchlistFilms = (films) => {
+  return films.filter((film) => film.isActiveWatchlist);
+};
+
+const getHistoryFilms = (films) => {
+  return films.filter((film) => film.isActiveWatched);
+};
+
+const getFavoriteFilms = (films) => {
+  return films.filter((film) => film.isActiveFavorite);
+};
+
+const getFilmsByFilter = (films, filterType) => {
+  switch (filterType) {
+    case _const_js__WEBPACK_IMPORTED_MODULE_0__.FilterType.ALL:
+      return films;
+    case _const_js__WEBPACK_IMPORTED_MODULE_0__.FilterType.WATCHLIST:
+      return getWatchlistFilms(films);
+    case _const_js__WEBPACK_IMPORTED_MODULE_0__.FilterType.HISTORY:
+      return getHistoryFilms(films);
+    case _const_js__WEBPACK_IMPORTED_MODULE_0__.FilterType.FAVORITES:
+      return getFavoriteFilms(films);
+  }
+
+  return films;
+};
 
 /***/ }),
 
@@ -7533,15 +7872,17 @@ var __webpack_exports__ = {};
   \*********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_rank_user_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/rank-user.js */ "./src/components/rank-user.js");
-/* harmony import */ var _components_main_menu_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/main-menu.js */ "./src/components/main-menu.js");
-/* harmony import */ var _components_sort_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/sort.js */ "./src/components/sort.js");
-/* harmony import */ var _components_films_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/films.js */ "./src/components/films.js");
-/* harmony import */ var _controllers_page_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./controllers/page.js */ "./src/controllers/page.js");
-/* harmony import */ var _components_film_statistics_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/film-statistics.js */ "./src/components/film-statistics.js");
-/* harmony import */ var _mock_film_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./mock/film.js */ "./src/mock/film.js");
-/* harmony import */ var _mock_rank_user_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./mock/rank-user.js */ "./src/mock/rank-user.js");
-/* harmony import */ var _mock_main_menu_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./mock/main-menu.js */ "./src/mock/main-menu.js");
-/* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./utils/render.js */ "./src/utils/render.js");
+/* harmony import */ var _components_sort_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/sort.js */ "./src/components/sort.js");
+/* harmony import */ var _components_films_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/films.js */ "./src/components/films.js");
+/* harmony import */ var _components_film_statistics_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/film-statistics.js */ "./src/components/film-statistics.js");
+/* harmony import */ var _controllers_filter_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./controllers/filter.js */ "./src/controllers/filter.js");
+/* harmony import */ var _controllers_page_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./controllers/page.js */ "./src/controllers/page.js");
+/* harmony import */ var _models_movies_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./models/movies.js */ "./src/models/movies.js");
+/* harmony import */ var _models_comments_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./models/comments.js */ "./src/models/comments.js");
+/* harmony import */ var _mock_film_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./mock/film.js */ "./src/mock/film.js");
+/* harmony import */ var _mock_comment_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./mock/comment.js */ "./src/mock/comment.js");
+/* harmony import */ var _mock_rank_user_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./mock/rank-user.js */ "./src/mock/rank-user.js");
+/* harmony import */ var _utils_render_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./utils/render.js */ "./src/utils/render.js");
 
 
 
@@ -7550,32 +7891,42 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- 
+
+
+
 
 
 const FILM_COUNT = 18;
+const COMMENT_COUNT_MAX = 4;
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 const footerStatisticsElement = document.querySelector(`.footer__statistics`); 
 
-const rank = (0,_mock_rank_user_js__WEBPACK_IMPORTED_MODULE_7__.generateRank)();
-const menu = (0,_mock_main_menu_js__WEBPACK_IMPORTED_MODULE_8__.generateMainMenu)();
-const films = (0,_mock_film_js__WEBPACK_IMPORTED_MODULE_6__.generateFilms)(FILM_COUNT);
+const rank = (0,_mock_rank_user_js__WEBPACK_IMPORTED_MODULE_10__.generateRank)();
+(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_11__.render)(headerElement, new _components_rank_user_js__WEBPACK_IMPORTED_MODULE_0__.default(rank));
 
-(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_9__.render)(headerElement, new _components_rank_user_js__WEBPACK_IMPORTED_MODULE_0__.default(rank));
-(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_9__.render)(mainElement, new _components_main_menu_js__WEBPACK_IMPORTED_MODULE_1__.default(menu));
+const films = (0,_mock_film_js__WEBPACK_IMPORTED_MODULE_8__.generateFilms)(FILM_COUNT);
+const filmsModel = new _models_movies_js__WEBPACK_IMPORTED_MODULE_6__.default();
+filmsModel.setFilms(films);
 
-const sortComponent = new _components_sort_js__WEBPACK_IMPORTED_MODULE_2__.default();
-(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_9__.render)(mainElement, sortComponent);
+const filterController = new _controllers_filter_js__WEBPACK_IMPORTED_MODULE_4__.default(mainElement, filmsModel);
+filterController.render();
 
-const filmsComponent = new _components_films_js__WEBPACK_IMPORTED_MODULE_3__.default();
-const pageController = new _controllers_page_js__WEBPACK_IMPORTED_MODULE_4__.default(filmsComponent, sortComponent);
+const sortComponent = new _components_sort_js__WEBPACK_IMPORTED_MODULE_1__.default();
+(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_11__.render)(mainElement, sortComponent);
 
-(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_9__.render)(mainElement, filmsComponent);
+const comments = (0,_mock_comment_js__WEBPACK_IMPORTED_MODULE_9__.generateComments)(COMMENT_COUNT_MAX);
+const commentsModel = new _models_comments_js__WEBPACK_IMPORTED_MODULE_7__.default();
+commentsModel.setComments(comments);
+
+const filmsComponent = new _components_films_js__WEBPACK_IMPORTED_MODULE_2__.default();
+const pageController = new _controllers_page_js__WEBPACK_IMPORTED_MODULE_5__.default(filmsComponent, filmsModel, commentsModel, sortComponent);
+
+(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_11__.render)(mainElement, filmsComponent);
 pageController.render(films);
 
-(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_9__.render)(footerStatisticsElement, new _components_film_statistics_js__WEBPACK_IMPORTED_MODULE_5__.default(FILM_COUNT));
+(0,_utils_render_js__WEBPACK_IMPORTED_MODULE_11__.render)(footerStatisticsElement, new _components_film_statistics_js__WEBPACK_IMPORTED_MODULE_3__.default(FILM_COUNT));
 
 })();
 

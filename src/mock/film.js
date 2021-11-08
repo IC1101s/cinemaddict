@@ -116,6 +116,7 @@ const generateFilm = () => {
   const genres = [genre].concat(getRandomArrayLength(copyGenresFilms)).join(` `);
 
   return {
+    id: String(new Date() + Math.random()),
     countComments: getRandomIntegerNumber(0, 4),
   	name: getRandomArrayItem(namesFilms),
     rating: getRandomArrayItem(ratingsFilms).toFixed(1),

@@ -54,6 +54,11 @@ body {
   overflow: hidden;
 }
 
+.hide-overflow-y {
+  overflow-y: hidden;
+  padding-left: 11.5px;
+}
+
 a:link {
   opacity: 1;
   text-decoration: none;
@@ -233,6 +238,7 @@ button {
 }
 
 .main-navigation__item-count {
+  color: var(--text-color);
   background:rgba(0,46,255, 0.4);
   border-radius: 18px;
   font-weight: 500;

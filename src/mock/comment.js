@@ -25,23 +25,30 @@ const date = [
   `2021-10-17T19:10:21.005Z`,
 ];
 
-const emojiNameToImage = {
-  smile: `./images/emoji/smile.png`,
-  sleeping: `./images/emoji/sleeping.png`,
-  puke: `./images/emoji/puke.png`,
-  angry: `./images/emoji/angry.png`,
-};
+const emojiImages = [
+  `./images/emoji/smile.png`,
+  `./images/emoji/sleeping.png`,
+  `./images/emoji/puke.png`,
+  `./images/emoji/angry.png`,
+];
+
+const emojis = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`,
+];
 
 const generateComment = () => {
-  const emojiImages = Object.values(emojiNameToImage);
-  const names = Object.keys(emojiNameToImage);
-
   return {
-    emojiImage: getRandomArrayItem(emojiImages),
-    name: getRandomArrayItem(names),
+    id: String(new Date() + Math.random()),
     text: getRandomArrayItem(texts),
     author: getRandomArrayItem(authors),
     date: getRandomArrayItem(date),
+    emoji: getRandomArrayItem(emojis),
+    emojiImage: getRandomArrayItem(emojiImages),
+    emojis,
+    emojiImages,
   };
 };
 
