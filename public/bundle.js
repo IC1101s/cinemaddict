@@ -7178,22 +7178,10 @@ class PageController {
 	_onSortTypeChange(sortType) {
     this._showingFilmsCount = SHOWING_FILMS_COUNT_BY_BUTTON;
 
-    const filmsListElement = this._filmsListComponent.getElement();
-		const filmsListContElement = filmsListElement.querySelector(`.films-list__container`);
-
     const sortedFilms = getSortedFilms(this._filmsModel.getFilms(), sortType, 0, this._showingFilmsCount);
 
-    filmsListContElement.innerHTML = ``;
-
-    const newFilms = renderFilms(
-		 	filmsListContElement, 
-		  sortedFilms,
-		  this._commentsModel.getComments(),
-	 		this._onDataChange, 
-	 		this._onViewChange,
-		);	
-
-    this._showedMovieControllers = newFilms;
+		this._removeFilms();
+    this._renderFilms(sortedFilms);
 
 		this._renderShowMoreButton();
   }
