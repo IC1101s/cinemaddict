@@ -10,7 +10,7 @@ const createFilmTemplate = (film) => {
     genre, 
     poster, 
     description, 
-    countComments,
+    comments,
     isActiveWatchlist, 
     isActiveWatched, 
     isActiveFavorite,
@@ -37,7 +37,7 @@ const createFilmTemplate = (film) => {
       <p class="film-card__description">
         ${isBriefly ? description : `${description.slice(0, 139)}…`}
       </p>
-      <a class="film-card__comments">${countComments} comments</a>
+      <a class="film-card__comments">${comments.length} comments</a>
       <form class="film-card__controls">
         <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchlistButton}">Add to watchlist</button>
         <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${watchedButton}">Mark as watched</button>

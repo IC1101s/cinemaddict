@@ -15,3 +15,5 @@ export const formatDuration = (durationMinutes) => {
 export const formatDateHumanReadable = (date) => {
   return moment(date, `YYYY-MM-DDTHH:mm:ss.SSS-3`).fromNow();
 };
+
+// ПЕРЕЙТИ НА DAYJS

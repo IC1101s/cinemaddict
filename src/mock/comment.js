@@ -5,6 +5,8 @@ const texts = [
   `Booooooooooring`,
   `Very very old. Meh`,
   `Almost two hours? Seriously?`,
+  `Very good!`,
+  `Interesting movie`,
 ];
 
 const authors = [
@@ -22,14 +24,7 @@ const date = [
   `2019-07-02T18:21:02.089Z`,
   `2021-10-17T19:13:21.005Z`,
   `2021-10-17T19:12:21.005Z`,
-  `2021-10-17T19:10:21.005Z`,
-];
-
-const emojiImages = [
-  `./images/emoji/smile.png`,
-  `./images/emoji/sleeping.png`,
-  `./images/emoji/puke.png`,
-  `./images/emoji/angry.png`,
+  `2021-11-11T20:10:21.005Z`,
 ];
 
 const emojis = [
@@ -46,9 +41,6 @@ const generateComment = () => {
     author: getRandomArrayItem(authors),
     date: getRandomArrayItem(date),
     emoji: getRandomArrayItem(emojis),
-    emojiImage: getRandomArrayItem(emojiImages),
-    emojis,
-    emojiImages,
   };
 };
 

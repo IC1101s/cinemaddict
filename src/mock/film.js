@@ -1,3 +1,4 @@
+import {generateComments} from "./comment.js"; 
 import {getRandomIntegerNumber, getRandomArrayItem, getRandomArrayLength, getRandomArrayLength2} from "../utils/common.js";
 import {formatDateYear} from "../utils/date.js"; 
 
@@ -108,16 +109,30 @@ const agesFilms = [
   18,
 ];
 
+const emojiImages = [
+  `./images/emoji/smile.png`,
+  `./images/emoji/sleeping.png`,
+  `./images/emoji/puke.png`,
+  `./images/emoji/angry.png`,
+];
+
+const emojis = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`,
+];
+
 const generateFilm = () => {
   const dueDate = getRandomArrayItem(datesFilms);
   const genre = genresFilms[getRandomIntegerNumber(0, genresFilms.length - 1)];
   const copyGenresFilms = genresFilms.slice();
   const deleteGenre = copyGenresFilms.splice(copyGenresFilms.indexOf(genre, 0), 1);
   const genres = [genre].concat(getRandomArrayLength(copyGenresFilms)).join(` `);
+  const commentsCount = getRandomIntegerNumber(0, 5);
 
   return {
     id: String(new Date() + Math.random()),
-    countComments: getRandomIntegerNumber(0, 4),
   	name: getRandomArrayItem(namesFilms),
     rating: getRandomArrayItem(ratingsFilms).toFixed(1),
     duration: getRandomArrayItem(durationsFilms),
@@ -129,6 +144,9 @@ const generateFilm = () => {
     writers: getRandomArrayLength2(writersFilms).join(`, `),
     actors: getRandomArrayLength2(actorsFilms).join(`, `), 
     year: formatDateYear(dueDate),
+    comments: generateComments(commentsCount),
+    emojis,
+    emojiImages,
     dueDate, 
     genres,
     genre,
